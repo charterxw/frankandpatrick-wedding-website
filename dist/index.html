@@ -231,21 +231,43 @@
     if (path === '' || path === 'invitation-flatlay') {
       var loader = showFlatlayLoader();
       var done = false;
+      var lastCount = 0;
+      var stableRounds = 0;
+
       var poll = setInterval(function () {
+        if (done) return;
         var imgs = document.getElementsByTagName('img');
-        if (imgs.length > 0 && !done) {
-          var allComplete = true;
-          for (var i = 0; i < imgs.length; i++) {
-            if (!imgs[i].complete) { allComplete = false; break; }
-          }
-          if (allComplete) {
+        var count = imgs.length;
+
+        // Reset stability if Canva is still injecting images
+        if (count !== lastCount) {
+          lastCount = count;
+          stableRounds = 0;
+          return;
+        }
+
+        // Count stable — require at least a few images and all complete
+        if (count < 3) return;
+
+        var allComplete = true;
+        for (var i = 0; i < imgs.length; i++) {
+          if (!imgs[i].complete) { allComplete = false; break; }
+        }
+
+        if (allComplete) {
+          stableRounds++;
+          // Require stability for 4 consecutive polls (~800ms) before hiding
+          if (stableRounds >= 4) {
             done = true;
             clearInterval(poll);
             clearTimeout(fallback);
-            setTimeout(hideFlatlayLoader.bind(null, loader), 600);
+            setTimeout(hideFlatlayLoader.bind(null, loader), 300);
           }
+        } else {
+          stableRounds = 0;
         }
       }, 200);
+
       var fallback = setTimeout(function () {
         clearInterval(poll);
         hideFlatlayLoader(loader);
