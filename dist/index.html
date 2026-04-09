@@ -145,13 +145,39 @@
     });
   }
 
+  function showCover() {
+    var cover = document.getElementById('_wp_cover');
+    if (!cover) {
+      cover = document.createElement('div');
+      cover.id = '_wp_cover';
+      cover.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#553f2d;transition:opacity 200ms ease';
+      document.body.appendChild(cover);
+    }
+    cover.style.opacity = '1';
+    clearTimeout(cover._t);
+    // Auto-remove after 500ms for pages that have no sections to scale
+    cover._t = setTimeout(removeCover, 500);
+  }
+
+  function removeCover() {
+    var cover = document.getElementById('_wp_cover');
+    if (!cover) return;
+    clearTimeout(cover._t);
+    cover.style.opacity = '0';
+    cover._t = setTimeout(function () {
+      if (cover.parentNode) cover.parentNode.removeChild(cover);
+    }, 220);
+  }
+
   function waitAndInit() {
-    if (retries++ > 300) return;
+    if (retries++ > 300) { removeCover(); return; }
     if (!resolveSections() || !ready()) { requestAnimationFrame(waitAndInit); return; }
     applyScale();
+    removeCover();
   }
 
   function onNavigate() {
+    showCover();
     SECTIONS = [];
     retries = 0;
     waitAndInit();
