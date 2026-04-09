@@ -150,7 +150,7 @@
     if (!cover) {
       cover = document.createElement('div');
       cover.id = '_wp_cover';
-      cover.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fffaf0;transition:opacity 5000ms ease';
+      cover.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fffaf0;transition:opacity 200ms ease';
       document.body.appendChild(cover);
     }
     cover.style.opacity = '1';
@@ -169,8 +169,20 @@
   }
 
   function waitAndInit() {
-    if (retries++ > 300) { removeCover(); return; }
-    if (!resolveSections() || !ready()) { requestAnimationFrame(waitAndInit); return; }
+    retries++;
+    if (!resolveSections()) {
+      // No scalable sections on this page — give up quickly (~1s) and let
+      // window.load or the showCover timeout handle cover removal.
+      if (retries > 60) return;
+      requestAnimationFrame(waitAndInit);
+      return;
+    }
+    if (!ready()) {
+      // Sections found but Canva hasn't written their height yet — wait longer.
+      if (retries > 300) { removeCover(); return; }
+      requestAnimationFrame(waitAndInit);
+      return;
+    }
     applyScale();
     removeCover();
   }
@@ -191,9 +203,57 @@
     onNavigate();
   };
 
+  function showFlatlayLoader() {
+    var loader = document.createElement('div');
+    loader.id = '_wp_flatlay_loader';
+    loader.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fffaf0;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;color:#4b3526';
+    // loader.innerHTML =
+    //   '<div style="width:45px;height:45px;border:4px solid rgba(75,53,38,0.15);border-top-color:#4b3526;border-radius:50%;animation:_wp_spin 1s linear infinite;margin-bottom:20px"></div>' +
+    //   '<p style="letter-spacing:3px;font-size:13px;text-transform:uppercase;font-weight:600;margin:0">Loading</p>' +
+    //   '<style>@keyframes _wp_spin{to{transform:rotate(360deg);}}</style>';
+    loader.innerHTML = '';
+    document.body.appendChild(loader);
+    return loader;
+  }
+
+  function hideFlatlayLoader(loader) {
+    if (!loader || loader._done) return;
+    loader._done = true;
+    loader.style.transition = 'opacity 800ms ease';
+    loader.style.opacity = '0';
+    setTimeout(function () {
+      if (loader.parentNode) loader.parentNode.removeChild(loader);
+    }, 820);
+  }
+
   function onInitialLoad() {
-    showCover(3000);
-    window.addEventListener('load', removeCover, { once: true });
+    var path = window.location.pathname.replace(/^\/|\/$/g, '');
+    if (path === '' || path === 'invitation-flatlay') {
+      var loader = showFlatlayLoader();
+      var done = false;
+      var poll = setInterval(function () {
+        var imgs = document.getElementsByTagName('img');
+        if (imgs.length > 0 && !done) {
+          var allComplete = true;
+          for (var i = 0; i < imgs.length; i++) {
+            if (!imgs[i].complete) { allComplete = false; break; }
+          }
+          if (allComplete) {
+            done = true;
+            clearInterval(poll);
+            clearTimeout(fallback);
+            setTimeout(hideFlatlayLoader.bind(null, loader), 600);
+          }
+        }
+      }, 200);
+      var fallback = setTimeout(function () {
+        clearInterval(poll);
+        hideFlatlayLoader(loader);
+      }, 7000);
+    } else {
+      showCover(3000);
+      window.addEventListener('load', removeCover, { once: true });
+    }
     waitAndInit();
   }
 
