@@ -290,8 +290,9 @@
         var poll = setInterval(function () {
           if (done) return;
 
-          // Require DOM to be stable (no new images or src changes) for 800ms
-          if (Date.now() - lastMutation < 800) return;
+          // Require DOM to be stable (no new images or src changes) for 400ms
+          // to unblock the UI faster while we wait for top images.
+          if (Date.now() - lastMutation < 400) return;
 
           var imgs = document.getElementsByTagName('img');
           var count = imgs.length;
@@ -301,10 +302,14 @@
 
           var allComplete = true;
           for (var i = 0; i < imgs.length; i++) {
-            // Ensure the image is loaded, has a source, and is fully decoded
-            if (!imgs[i].complete || !imgs[i].src || imgs[i].naturalWidth === 0) { 
-              allComplete = false; 
-              break; 
+            var rect = imgs[i].getBoundingClientRect();
+            // Only wait for images visible in the top portion of the page
+            if (rect.top < window.innerHeight * 1.5) {
+              // Ensure the image is loaded, has a source, and is fully decoded
+              if (!imgs[i].complete || !imgs[i].src || imgs[i].naturalWidth === 0) { 
+                allComplete = false; 
+                break; 
+              }
             }
           }
 
