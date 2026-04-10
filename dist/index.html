@@ -71,23 +71,48 @@
     z-index: 1;
   }
 
-  /* Clip overflow from scaled inner content */
-  #PB7TyQ7htGfkPYLp > div, #PB3Bf6DcTqtzvKcB > div,
-  #PBNnRlMBV0LlKbbq > div, #PBdybjb0CDKmzzKC > div,
-  #PBkkS62fQQN04z6S > div,
-  #PBClDQPrWS06hXbc > div, #PBl0xtW3b9tzJj5h > div,
-  #PBPdwswPcYc70z2z > div, #PBPB4HwDqv4JP5Xg > div,
-  #PBYJtGx79yrSvklQ > div {
+  /* Full screen fallback (100vh) */
+  #PBFSmcmcPvKfPhpx,
+  #PBwzFRlpFRfJMqSm,
+  #PBtzVhDCRFMdnyWr,
+  #PBjG7drPxNT7xdNV {
+    height: 100dvh;
     overflow: hidden !important;
+    position: relative !important;
+    z-index: 1;
   }
 </style>
 <script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function () {
-  var PAGE_SECTIONS = [
-    ['PB7TyQ7htGfkPYLp', 'PBClDQPrWS06hXbc'],  // schedule
-    ['PB3Bf6DcTqtzvKcB', 'PBl0xtW3b9tzJj5h'],  // rsvp
-    ['PBNnRlMBV0LlKbbq', 'PBPdwswPcYc70z2z'],  // details
-    ['PBdybjb0CDKmzzKC', 'PBPB4HwDqv4JP5Xg'],  // dress-code
-    ['PBkkS62fQQN04z6S', 'PBYJtGx79yrSvklQ'],  // gifting
+  var PAGE_LAYOUTS = [
+    // schedule
+    [
+      { id: 'PB7TyQ7htGfkPYLp', ratio: 0.20 },
+      { id: 'PBClDQPrWS06hXbc', ratio: 0.80, fill: true },
+      { id: 'PBFSmcmcPvKfPhpx', ratio: 1.0, fill: true, exactScale: true }
+    ],
+    // rsvp
+    [
+      { id: 'PB3Bf6DcTqtzvKcB', ratio: 0.20 },
+      { id: 'PBl0xtW3b9tzJj5h', ratio: 0.80, fill: true },
+      { id: 'PBwzFRlpFRfJMqSm', ratio: 1.0, fill: true, exactScale: true }
+    ],
+    // details
+    [
+      { id: 'PBNnRlMBV0LlKbbq', ratio: 0.20 }, 
+      { id: 'PBPdwswPcYc70z2z', ratio: 0.80, fill: true },
+      { id: 'PBtzVhDCRFMdnyWr', ratio: 1.0, fill: true, exactScale: true }
+    ],
+    // dress-code
+    [
+      { id: 'PBdybjb0CDKmzzKC', ratio: 0.20 },
+      { id: 'PBPB4HwDqv4JP5Xg', ratio: 0.80, fill: true }
+    ],
+    // gifting
+    [
+      { id: 'PBkkS62fQQN04z6S', ratio: 0.20 },
+      { id: 'PBYJtGx79yrSvklQ', ratio: 0.80, fill: true },
+      { id: 'PBjG7drPxNT7xdNV', ratio: 1.0, fill: true, exactScale: true }
+    ]
   ];
   var SECTIONS = [];
   var retries = 0;
@@ -95,12 +120,9 @@
   function resolveSections() {
     if (SECTIONS.length && !document.getElementById(SECTIONS[0].id)) SECTIONS = [];
     if (SECTIONS.length) return true;
-    for (var i = 0; i < PAGE_SECTIONS.length; i++) {
-      if (document.getElementById(PAGE_SECTIONS[i][0])) {
-        SECTIONS = [
-          { id: PAGE_SECTIONS[i][0], ratio: 0.20 },
-          { id: PAGE_SECTIONS[i][1], ratio: 0.80 }
-        ];
+    for (var i = 0; i < PAGE_LAYOUTS.length; i++) {
+      if (document.getElementById(PAGE_LAYOUTS[i][0].id)) {
+        SECTIONS = PAGE_LAYOUTS[i];
         return true;
       }
     }
@@ -131,17 +153,52 @@
       if (!n || !n.inner) return;
       var actualH = parseFloat(n.inner.style.height);
       if (!actualH) return;
-      // Last section gets remaining pixels + 2px to cover any sub-pixel gap
-      var desiredH = idx === SECTIONS.length - 1 ? vh - usedH + 2 : Math.floor(vh * cfg.ratio);
-      usedH += desiredH;
-      var scale = Math.min(1, desiredH / actualH);
+      
+      var desiredH = 0;
+      if (cfg.fill) {
+        desiredH = vh - usedH + 2; // fill rest of the screen + 2px overlap
+        usedH = 0; // reset for next screen
+      } else {
+        desiredH = Math.floor(vh * cfg.ratio);
+        usedH += desiredH;
+      }
+      
+      var scale = desiredH / actualH;
+      if (!cfg.exactScale) {
+        scale = Math.min(1, scale);
+      }
       n.section.style.removeProperty('margin-top');
       n.section.style.setProperty('height', desiredH + 'px', 'important');
       n.section.style.setProperty('min-height', desiredH + 'px', 'important');
       n.section.style.setProperty('max-height', desiredH + 'px', 'important');
+
       n.inner.style.transformOrigin = 'top center';
-      n.inner.style.transform = scale < 1 ? 'scale(' + scale + ')' : '';
+      n.inner.style.transform = (cfg.exactScale || scale < 1) ? 'scale(' + scale + ')' : '';
       n.inner.style.marginLeft = '';
+
+      // Allow background images to bleed horizontally to the edges of the screen
+      // The parent <section> container will handle the actual clipping.
+      n.section.firstElementChild.style.setProperty('overflow', 'visible', 'important');
+      n.inner.style.setProperty('overflow', 'visible', 'important');
+
+      // Scale up the background layer to behave like object-fit: cover
+      if (['PBClDQPrWS06hXbc', 'PBl0xtW3b9tzJj5h', 'PBPdwswPcYc70z2z', 'PBPB4HwDqv4JP5Xg', 'PBYJtGx79yrSvklQ'].indexOf(cfg.id) !== -1) {
+        var bgLayer = n.inner.firstElementChild;
+        if (bgLayer) {
+          var actualW = parseFloat(n.inner.style.width) || n.inner.offsetWidth || 1366;
+          var scaleX = n.section.offsetWidth / (actualW * (scale || 1));
+          var scaleY = desiredH / (actualH * (scale || 1));
+          var bgScale = Math.max(1.02, scaleX, scaleY);
+          var shiftY = (desiredH - (actualH * (scale || 1))) / 2 / (scale || 1);
+          bgLayer.style.setProperty('transform', 'translateY(' + shiftY + 'px) scale(' + bgScale + ')', 'important');
+          bgLayer.style.setProperty('transform-origin', 'center center', 'important');
+          
+          var insetY = (actualH * (1 - scaleY / bgScale)) / 2;
+          var insetX = (actualW * (1 - scaleX / bgScale)) / 2;
+          bgLayer.style.setProperty('clip-path', 'inset(' + insetY + 'px ' + insetX + 'px)', 'important');
+          bgLayer.style.setProperty('-webkit-clip-path', 'inset(' + insetY + 'px ' + insetX + 'px)', 'important');
+        }
+      }
     });
   }
 
