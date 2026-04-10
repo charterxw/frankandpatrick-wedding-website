@@ -288,47 +288,57 @@
     if (path === '' || path === 'invitation-flatlay') {
       var loader = showFlatlayLoader();
       var done = false;
-      var lastCount = 0;
-      var stableRounds = 0;
+      var lastMutation = Date.now();
+
+      var observer = new MutationObserver(function () {
+        lastMutation = Date.now();
+      });
+
+      // Watch for DOM nodes being added/removed or image sources changing
+      observer.observe(document.body, { 
+        childList: true, 
+        subtree: true, 
+        attributes: true, 
+        attributeFilter: ['src', 'srcset'] 
+      });
 
       var poll = setInterval(function () {
         if (done) return;
+
+        // Require DOM to be stable (no new images or src changes) for 800ms
+        if (Date.now() - lastMutation < 800) return;
+
         var imgs = document.getElementsByTagName('img');
         var count = imgs.length;
 
-        // Reset stability if Canva is still injecting images
-        if (count !== lastCount) {
-          lastCount = count;
-          stableRounds = 0;
-          return;
-        }
-
-        // Count stable — require at least a few images and all complete
-        if (count < 3) return;
+        // Require at least 1 image to be present on the flatlay
+        if (count < 1) return;
 
         var allComplete = true;
         for (var i = 0; i < imgs.length; i++) {
-          if (!imgs[i].complete) { allComplete = false; break; }
+          // Ensure the image is loaded, has a source, and is fully decoded
+          if (!imgs[i].complete || !imgs[i].src || imgs[i].naturalWidth === 0) { 
+            allComplete = false; 
+            break; 
+          }
         }
 
         if (allComplete) {
-          stableRounds++;
-          // Require stability for 4 consecutive polls (~800ms) before hiding
-          if (stableRounds >= 4) {
-            done = true;
-            clearInterval(poll);
-            clearTimeout(fallback);
-            setTimeout(hideFlatlayLoader.bind(null, loader), 300);
-          }
-        } else {
-          stableRounds = 0;
+          done = true;
+          clearInterval(poll);
+          clearTimeout(fallback);
+          observer.disconnect();
+          setTimeout(hideFlatlayLoader.bind(null, loader), 200);
         }
       }, 200);
 
       var fallback = setTimeout(function () {
+        if (done) return;
+        done = true;
         clearInterval(poll);
+        observer.disconnect();
         hideFlatlayLoader(loader);
-      }, 7000);
+      }, 12000); // Increased fallback for slower connections downloading large assets
     } else {
       showCover(3000);
       window.addEventListener('load', removeCover, { once: true });
