@@ -81,7 +81,42 @@
     position: relative !important;
     z-index: 1;
   }
+
+  /* Page-level reveal: hidden until images are ready */
+  #root {
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+  }
+  #root.ready {
+    opacity: 1;
+  }
+
+  /* Normalize per-element transitions so late-loading images
+     appear quickly and don't draw attention with slow fades */
+  .eueQpQ .SK4LUw,
+  .eueQpQ .oFR_Ag {
+    transition-duration: 0.15s !important;
+  }
 </style>
+<script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function() {
+  var imgs = [
+    '_assets/media/28bafd64731ed253375c42f984f6002f.webp',
+    '_assets/media/fddab0f3a29539180e94624a92161021.webp',
+    '_assets/media/488420aaad498e428a69475ba8880608.webp'
+  ];
+  var promises = imgs.map(function(src) {
+    return new Promise(function(resolve) {
+      var img = new Image();
+      img.onload = img.onerror = resolve;
+      img.src = src;
+    });
+  });
+  var maxWait = new Promise(function(resolve) { setTimeout(resolve, 5000); });
+  Promise.race([Promise.all(promises), maxWait]).then(function() {
+    var root = document.getElementById('root');
+    if (root) root.classList.add('ready');
+  });
+})();</script>
 <script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function () {
   var PAGE_LAYOUTS = [
     // schedule
