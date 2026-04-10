@@ -202,60 +202,24 @@
     });
   }
 
-  function showCover(timeout) {
-    var cover = document.getElementById('_wp_cover');
-    if (!cover) {
-      cover = document.createElement('div');
-      cover.id = '_wp_cover';
-          cover.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fffaf0;transition:opacity 400ms ease';
-      document.body.appendChild(cover);
-    }
-    cover.style.opacity = '1';
-        cover._done = false;
-    clearTimeout(cover._t);
-        if (timeout !== -1) {
-          cover._t = setTimeout(removeCover, timeout || 500);
-        }
-        return cover;
-  }
-
-  function removeCover() {
-    var cover = document.getElementById('_wp_cover');
-        if (!cover || cover._done) return;
-        cover._done = true;
-    clearTimeout(cover._t);
-    cover.style.opacity = '0';
-        setTimeout(function () {
-      if (cover.parentNode) cover.parentNode.removeChild(cover);
-        }, 420);
-  }
-
   function waitAndInit() {
     retries++;
     if (!resolveSections()) {
-      // No scalable sections on this page — give up quickly (~1s) and let
-      // window.load or the showCover timeout handle cover removal.
       if (retries > 60) return;
       requestAnimationFrame(waitAndInit);
       return;
     }
     if (!ready()) {
-      // Sections found but Canva hasn't written their height yet — wait longer.
-      if (retries > 300) { removeCover(); return; }
+      if (retries > 300) { return; }
       requestAnimationFrame(waitAndInit);
       return;
     }
     applyScale();
-    removeCover();
   }
 
   function onNavigate() {
         var path = window.location.pathname.replace(/^\/|\/$/g, '');
-        if (path === '' || path === 'invitation-flatlay') {
-          showCover(-1);
-          waitForImages();
-        } else {
-          showCover(500);
+        if (path !== '' && path !== 'invitation-flatlay') {
           SECTIONS = [];
           retries = 0;
           waitAndInit();
@@ -271,74 +235,9 @@
     onNavigate();
   };
 
-      function waitForImages() {
-        var done = false;
-        var lastMutation = Date.now();
-
-        var observer = new MutationObserver(function () {
-          lastMutation = Date.now();
-        });
-
-        // Watch for DOM nodes being added/removed or image sources changing
-        observer.observe(document.body, { 
-          childList: true, 
-          subtree: true, 
-          attributes: true, 
-          attributeFilter: ['src', 'srcset'] 
-        });
-
-        var poll = setInterval(function () {
-          if (done) return;
-
-          // Require DOM to be stable (no new images or src changes) for 400ms
-          // to unblock the UI faster while we wait for top images.
-          if (Date.now() - lastMutation < 400) return;
-
-          var imgs = document.getElementsByTagName('img');
-          var count = imgs.length;
-
-          // Require at least 1 image to be present
-          if (count < 1) return;
-
-          var allComplete = true;
-          for (var i = 0; i < imgs.length; i++) {
-            var rect = imgs[i].getBoundingClientRect();
-            // Only wait for images visible in the top portion of the page
-            if (rect.top < window.innerHeight * 1.5) {
-              // Ensure the image is loaded, has a source, and is fully decoded
-              if (!imgs[i].complete || !imgs[i].src || imgs[i].naturalWidth === 0) { 
-                allComplete = false; 
-                break; 
-              }
-            }
-          }
-
-          if (allComplete) {
-            done = true;
-            clearInterval(poll);
-            clearTimeout(fallback);
-            observer.disconnect();
-            setTimeout(removeCover, 200);
-          }
-        }, 200);
-
-        var fallback = setTimeout(function () {
-          if (done) return;
-          done = true;
-          clearInterval(poll);
-          observer.disconnect();
-          removeCover();
-        }, 12000); // Increased fallback for slower connections downloading large assets
-      }
-
       function onInitialLoad() {
         var path = window.location.pathname.replace(/^\/|\/$/g, '');
-        if (path === '' || path === 'invitation-flatlay') {
-          showCover(-1);
-          waitForImages();
-        } else {
-          showCover(3000);
-          window.addEventListener('load', removeCover, { once: true });
+        if (path !== '' && path !== 'invitation-flatlay') {
           SECTIONS = [];
           retries = 0;
           waitAndInit();
