@@ -207,22 +207,27 @@
     if (!cover) {
       cover = document.createElement('div');
       cover.id = '_wp_cover';
-      cover.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fffaf0;transition:opacity 200ms ease';
+          cover.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fffaf0;transition:opacity 400ms ease';
       document.body.appendChild(cover);
     }
     cover.style.opacity = '1';
+        cover._done = false;
     clearTimeout(cover._t);
-    cover._t = setTimeout(removeCover, timeout || 500);
+        if (timeout !== -1) {
+          cover._t = setTimeout(removeCover, timeout || 500);
+        }
+        return cover;
   }
 
   function removeCover() {
     var cover = document.getElementById('_wp_cover');
-    if (!cover) return;
+        if (!cover || cover._done) return;
+        cover._done = true;
     clearTimeout(cover._t);
     cover.style.opacity = '0';
-    cover._t = setTimeout(function () {
+        setTimeout(function () {
       if (cover.parentNode) cover.parentNode.removeChild(cover);
-    }, 220);
+        }, 420);
   }
 
   function waitAndInit() {
@@ -245,10 +250,16 @@
   }
 
   function onNavigate() {
-    showCover();
-    SECTIONS = [];
-    retries = 0;
-    waitAndInit();
+        var path = window.location.pathname.replace(/^\/|\/$/g, '');
+        if (path === '' || path === 'invitation-flatlay') {
+          showCover(-1);
+          waitForImages();
+        } else {
+          showCover(500);
+          SECTIONS = [];
+          retries = 0;
+          waitAndInit();
+        }
   }
 
   window.addEventListener('resize', applyScale);
@@ -260,90 +271,73 @@
     onNavigate();
   };
 
-  function showFlatlayLoader() {
-    var loader = document.createElement('div');
-    loader.id = '_wp_flatlay_loader';
-    loader.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#fffaf0;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;color:#4b3526';
-    // loader.innerHTML =
-    //   '<div style="width:45px;height:45px;border:4px solid rgba(75,53,38,0.15);border-top-color:#4b3526;border-radius:50%;animation:_wp_spin 1s linear infinite;margin-bottom:20px"></div>' +
-    //   '<p style="letter-spacing:3px;font-size:13px;text-transform:uppercase;font-weight:600;margin:0">Loading</p>' +
-    //   '<style>@keyframes _wp_spin{to{transform:rotate(360deg);}}</style>';
-    loader.innerHTML = '';
-    document.body.appendChild(loader);
-    return loader;
-  }
+      function waitForImages() {
+        var done = false;
+        var lastMutation = Date.now();
 
-  function hideFlatlayLoader(loader) {
-    if (!loader || loader._done) return;
-    loader._done = true;
-    loader.style.transition = 'opacity 800ms ease';
-    loader.style.opacity = '0';
-    setTimeout(function () {
-      if (loader.parentNode) loader.parentNode.removeChild(loader);
-    }, 820);
-  }
+        var observer = new MutationObserver(function () {
+          lastMutation = Date.now();
+        });
 
-  function onInitialLoad() {
-    var path = window.location.pathname.replace(/^\/|\/$/g, '');
-    if (path === '' || path === 'invitation-flatlay') {
-      var loader = showFlatlayLoader();
-      var done = false;
-      var lastMutation = Date.now();
+        // Watch for DOM nodes being added/removed or image sources changing
+        observer.observe(document.body, { 
+          childList: true, 
+          subtree: true, 
+          attributes: true, 
+          attributeFilter: ['src', 'srcset'] 
+        });
 
-      var observer = new MutationObserver(function () {
-        lastMutation = Date.now();
-      });
+        var poll = setInterval(function () {
+          if (done) return;
 
-      // Watch for DOM nodes being added/removed or image sources changing
-      observer.observe(document.body, { 
-        childList: true, 
-        subtree: true, 
-        attributes: true, 
-        attributeFilter: ['src', 'srcset'] 
-      });
+          // Require DOM to be stable (no new images or src changes) for 800ms
+          if (Date.now() - lastMutation < 800) return;
 
-      var poll = setInterval(function () {
-        if (done) return;
+          var imgs = document.getElementsByTagName('img');
+          var count = imgs.length;
 
-        // Require DOM to be stable (no new images or src changes) for 800ms
-        if (Date.now() - lastMutation < 800) return;
+          // Require at least 1 image to be present
+          if (count < 1) return;
 
-        var imgs = document.getElementsByTagName('img');
-        var count = imgs.length;
-
-        // Require at least 1 image to be present on the flatlay
-        if (count < 1) return;
-
-        var allComplete = true;
-        for (var i = 0; i < imgs.length; i++) {
-          // Ensure the image is loaded, has a source, and is fully decoded
-          if (!imgs[i].complete || !imgs[i].src || imgs[i].naturalWidth === 0) { 
-            allComplete = false; 
-            break; 
+          var allComplete = true;
+          for (var i = 0; i < imgs.length; i++) {
+            // Ensure the image is loaded, has a source, and is fully decoded
+            if (!imgs[i].complete || !imgs[i].src || imgs[i].naturalWidth === 0) { 
+              allComplete = false; 
+              break; 
+            }
           }
-        }
 
-        if (allComplete) {
+          if (allComplete) {
+            done = true;
+            clearInterval(poll);
+            clearTimeout(fallback);
+            observer.disconnect();
+            setTimeout(removeCover, 200);
+          }
+        }, 200);
+
+        var fallback = setTimeout(function () {
+          if (done) return;
           done = true;
           clearInterval(poll);
-          clearTimeout(fallback);
           observer.disconnect();
-          setTimeout(hideFlatlayLoader.bind(null, loader), 200);
-        }
-      }, 200);
+          removeCover();
+        }, 12000); // Increased fallback for slower connections downloading large assets
+      }
 
-      var fallback = setTimeout(function () {
-        if (done) return;
-        done = true;
-        clearInterval(poll);
-        observer.disconnect();
-        hideFlatlayLoader(loader);
-      }, 12000); // Increased fallback for slower connections downloading large assets
-    } else {
-      showCover(3000);
-      window.addEventListener('load', removeCover, { once: true });
-    }
-    waitAndInit();
+      function onInitialLoad() {
+        var path = window.location.pathname.replace(/^\/|\/$/g, '');
+        if (path === '' || path === 'invitation-flatlay') {
+          showCover(-1);
+          waitForImages();
+        } else {
+          showCover(3000);
+          window.addEventListener('load', removeCover, { once: true });
+          SECTIONS = [];
+          retries = 0;
+          waitAndInit();
+        }
   }
 
   document.readyState === 'loading'
