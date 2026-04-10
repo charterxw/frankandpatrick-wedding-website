@@ -109,6 +109,46 @@
     transition-duration: 0.1s !important;
   }
 </style>
+<script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function() {
+  var PRIORITY = [
+    'fece0de43452cde4f208ba402906ec62',
+    '488420aaad498e428a69475ba8880608',
+    'fddab0f3a29539180e94624a92161021',
+    '3c1d8466421cfe19d70bd369f31e8d2c',
+    '28bafd64731ed253375c42f984f6002f'
+  ];
+  function isPriority(src) {
+    if (!src) return false;
+    for (var i = 0; i < PRIORITY.length; i++) {
+      if (src.indexOf(PRIORITY[i]) !== -1) return true;
+    }
+    return false;
+  }
+  function process(img) {
+    if (img.tagName !== 'IMG') return;
+    if (isPriority(img.getAttribute('src'))) {
+      img.loading = 'eager';
+      img.fetchPriority = 'high';
+    } else if (!img.hasAttribute('loading')) {
+      img.loading = 'lazy';
+    }
+  }
+  var path = window.location.pathname.replace(/^\/|\/$/g, '');
+  if (path === '' || path === 'invitation-flatlay') {
+    new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var nodes = mutations[i].addedNodes;
+        for (var j = 0; j < nodes.length; j++) {
+          var n = nodes[j];
+          if (n.nodeType !== 1) continue;
+          if (n.tagName === 'IMG') process(n);
+          var imgs = n.getElementsByTagName && n.getElementsByTagName('img');
+          if (imgs) for (var k = 0; k < imgs.length; k++) process(imgs[k]);
+        }
+      }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  }
+})();</script>
 <script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function () {
   var PAGE_LAYOUTS = [
     // schedule
