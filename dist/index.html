@@ -304,38 +304,46 @@
     });
   }
 
+  function removeNavTransition() {
+    var navT = document.getElementById('nav-transition');
+    if (navT) { navT.classList.add('fade-out'); setTimeout(function() { navT.remove(); }, 400); }
+  }
+
   function waitAndInit() {
     retries++;
     if (!resolveSections()) {
-      if (retries > 60) return;
+      if (retries > 60) { removeNavTransition(); return; }
       requestAnimationFrame(waitAndInit);
       return;
     }
     if (!ready()) {
-      if (retries > 300) { return; }
+      if (retries > 300) { removeNavTransition(); return; }
       requestAnimationFrame(waitAndInit);
       return;
     }
     applyScale();
     document.documentElement.classList.add('scaled');
-    var navT = document.getElementById('nav-transition');
-    if (navT) { navT.classList.add('fade-out'); setTimeout(function() { navT.remove(); }, 400); }
+    removeNavTransition();
   }
+
+  var SCALED_PAGES = ['schedule','rsvp','details','dress-code','gifting'];
 
   function onNavigate() {
         var path = window.location.pathname.replace(/^\/|\/$/g, '');
         if (path !== '' && path !== 'invitation-flatlay') {
           window.scrollTo(0, 0);
-          if (!document.getElementById('nav-transition')) {
-            var overlay = document.createElement('div');
-            overlay.id = 'nav-transition';
-            document.body.appendChild(overlay);
+          if (SCALED_PAGES.indexOf(path) > -1) {
+            if (!document.getElementById('nav-transition')) {
+              var overlay = document.createElement('div');
+              overlay.id = 'nav-transition';
+              document.body.appendChild(overlay);
+            }
+            document.documentElement.classList.add('subpage');
+            document.documentElement.classList.remove('scaled');
+            SECTIONS = [];
+            retries = 0;
+            waitAndInit();
           }
-          document.documentElement.classList.add('subpage');
-          document.documentElement.classList.remove('scaled');
-          SECTIONS = [];
-          retries = 0;
-          waitAndInit();
         } else {
           document.documentElement.classList.remove('subpage');
           document.documentElement.classList.remove('scaled');
