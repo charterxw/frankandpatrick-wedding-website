@@ -325,6 +325,7 @@
   function onNavigate() {
         var path = window.location.pathname.replace(/^\/|\/$/g, '');
         if (path !== '' && path !== 'invitation-flatlay') {
+          window.scrollTo(0, 0);
           if (!document.getElementById('nav-transition')) {
             var overlay = document.createElement('div');
             overlay.id = 'nav-transition';
