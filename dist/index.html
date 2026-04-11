@@ -62,8 +62,8 @@
   .subpage #PBwzFRlpFRfJMqSm,
   .subpage #PBtzVhDCRFMdnyWr,
   .subpage #PBjG7drPxNT7xdNV {
+    visibility: hidden;
     opacity: 0;
-    transition: opacity 0.2s ease-out;
   }
   .scaled #PB7TyQ7htGfkPYLp,
   .scaled #PB3Bf6DcTqtzvKcB,
@@ -79,6 +79,7 @@
   .scaled #PBwzFRlpFRfJMqSm,
   .scaled #PBtzVhDCRFMdnyWr,
   .scaled #PBjG7drPxNT7xdNV {
+    visibility: visible;
     opacity: 1;
   }
 
@@ -119,7 +120,8 @@
 
 
   /* Loading overlay */
-  #flatlay-loader {
+  #flatlay-loader,
+  #nav-transition {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: #fffaf0;
@@ -129,7 +131,8 @@
     justify-content: center;
     transition: opacity 0.4s ease-out;
   }
-  #flatlay-loader.fade-out {
+  #flatlay-loader.fade-out,
+  #nav-transition.fade-out {
     opacity: 0;
     pointer-events: none;
   }
@@ -315,14 +318,26 @@
     }
     applyScale();
     document.documentElement.classList.add('scaled');
+    var navT = document.getElementById('nav-transition');
+    if (navT) { navT.classList.add('fade-out'); setTimeout(function() { navT.remove(); }, 400); }
   }
 
   function onNavigate() {
         var path = window.location.pathname.replace(/^\/|\/$/g, '');
         if (path !== '' && path !== 'invitation-flatlay') {
+          if (!document.getElementById('nav-transition')) {
+            var overlay = document.createElement('div');
+            overlay.id = 'nav-transition';
+            document.body.appendChild(overlay);
+          }
+          document.documentElement.classList.add('subpage');
+          document.documentElement.classList.remove('scaled');
           SECTIONS = [];
           retries = 0;
           waitAndInit();
+        } else {
+          document.documentElement.classList.remove('subpage');
+          document.documentElement.classList.remove('scaled');
         }
   }
 
