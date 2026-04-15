@@ -132,8 +132,8 @@
     } else {
       overlay.style.transform = '';
       overlay.style.transformOrigin = '';
-      if (container) container.style.height = '';
-      if (spacer) spacer.style.height = '';
+      if (container) container.style.height = origH + 'px';
+      if (spacer) spacer.style.height = origH + 'px';
     }
   }
   window.addEventListener('resize', scaleSection4);

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Schedule</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/_assets/images/2d0b56e7e51cf11036ad8734bdb67e2d.png">
+<link rel="icon" href="/_assets/images/e53c4bd8da5e491d9ab09e7cf0daf874.png" sizes="192x192">
+<meta property="og:title" content="Schedule">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="/css/schedule-fonts.css">
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body { margin: 0; background: #fffaf0; color: #4b3526; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden; }
+img { display: block; max-width: none; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Section 1: Header Bar ── */
+.header-bar {
+  background: #fffaf0;
+  height: 20vh;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 20px;
+  overflow: hidden;
+}
+.header-bar .subtitle {
+  font-family: YAFdJsyuOPM_1, sans-serif;
+  font-weight: 600;
+  font-size: clamp(10px, 2.5vw, 14px);
+  letter-spacing: 0.254em;
+  text-transform: uppercase;
+  color: #654040;
+  line-height: 2;
+}
+.header-bar .title {
+  font-family: YAFdJsyuOPM_1, sans-serif;
+  font-weight: 600;
+  font-size: clamp(24px, 7vw, 44px);
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: #553f2d;
+  line-height: 1.1;
+  margin-top: 5px;
+  text-align: center;
+}
+.header-bar .date-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 13px;
+}
+.header-bar .date-line .date-part {
+  font-family: YAFdJsyuOPM_1, sans-serif;
+  font-weight: 400;
+  font-size: clamp(7px, 1.8vw, 9.8px);
+  letter-spacing: 0.075em;
+  line-height: 15px;
+  color: #654040;
+  transform: translateY(-2px);
+}
+.header-bar .date-line .city {
+  font-family: YAGLy38gVoc_0, serif;
+  font-weight: 400;
+  font-size: clamp(16px, 4vw, 24px);
+  letter-spacing: -0.1em;
+  line-height: 34px;
+  color: #654040;
+}
+
+/* ── Section 2: Hero ── */
+.hero {
+  background: #553f2d;
+  position: relative;
+  height: 80vh;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-title {
+  position: relative;
+  font-family: YAGLy38gVoc_0, serif;
+  font-weight: 400;
+  font-size: clamp(50px, 13vw, 93px);
+  color: #fffcf9;
+  line-height: 1.1;
+  z-index: 1;
+}
+
+/* ── Section 3: Events ── */
+.events {
+  background: #fffaf0;
+  padding: clamp(60px, 10vw, 120px) 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(40px, 8vw, 120px);
+  flex-wrap: wrap;
+}
+.event-card {
+  text-align: center;
+  max-width: 340px;
+  flex: 1;
+  min-width: 260px;
+}
+.event-card .event-name {
+  font-family: YAGLy38gVoc_0, serif;
+  font-weight: 400;
+  font-size: clamp(28px, 5vw, 40px);
+  color: #4b3526;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.event-card .event-tagline {
+  font-family: YAFdJsyuOPM_1, sans-serif;
+  font-weight: 600;
+  font-size: clamp(32px, 6vw, 47px);
+  letter-spacing: 0.027em;
+  color: #4b3526;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.event-card .event-details {
+  font-family: YAFcfr0ZwUA_0, serif;
+  font-weight: 400;
+  font-size: clamp(13px, 2.2vw, 16px);
+  line-height: 1.6;
+  color: #4b3526;
+}
+.event-card .event-details p {
+  margin: 0;
+}
+
+/* ── Section 4: Timeline ── */
+.timeline-section {
+  background: #fffaf0;
+  padding: clamp(40px, 8vw, 80px) 20px clamp(60px, 10vw, 120px);
+  text-align: center;
+}
+.timeline-title {
+  font-family: YAGLy38gVoc_0, serif;
+  font-weight: 400;
+  font-size: clamp(36px, 8vw, 60px);
+  color: #4b3526;
+  line-height: 1.1;
+  margin-bottom: clamp(40px, 8vw, 80px);
+}
+.timeline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(30px, 5vw, 60px) clamp(20px, 4vw, 40px);
+  max-width: 500px;
+  margin: 0 auto;
+}
+.timeline-item {
+  text-align: center;
+}
+.timeline-item .icon-wrap {
+  width: clamp(100px, 18vw, 150px);
+  height: clamp(100px, 18vw, 150px);
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.timeline-item .icon-wrap img {
+  max-width: 80%;
+  max-height: 80%;
+  width: auto;
+  height: auto;
+}
+.timeline-item .tl-time {
+  font-family: YAFdtQi73Xs_0, sans-serif;
+  font-weight: 600;
+  font-size: clamp(11px, 2vw, 14px);
+  letter-spacing: 0.382em;
+  text-transform: uppercase;
+  color: #4b3526;
+  line-height: 2;
+}
+.timeline-item .tl-label {
+  font-family: YAFcfr0ZwUA_0, serif;
+  font-weight: 400;
+  font-size: clamp(13px, 2.2vw, 16px);
+  color: #4b3526;
+  line-height: 1.8;
+}
+
+/* ── Footer ── */
+.page-footer {
+  background: #fffaf0;
+  padding: 28px 20px;
+  text-align: center;
+}
+.page-footer a {
+  font-family: YAFdtQi73Xs_0, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.382em;
+  text-transform: uppercase;
+  color: #4b3526;
+  text-decoration: none;
+}
+.page-footer a:hover { opacity: 0.7; }
+
+/* ── Animations ── */
+.fade-in { opacity: 0; transition: opacity 0.6s ease-out; }
+.fade-in.visible { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- Section 1: Header Bar -->
+  <header class="header-bar">
+    <span class="subtitle">With love</span>
+    <h1 class="title">Frank AND Patrick</h1>
+    <div class="date-line">
+      <span class="date-part">10 03</span>
+      <span class="city">San Francisco</span>
+      <span class="date-part">2026</span>
+    </div>
+  </header>
+
+  <!-- Section 2: Hero -->
+  <section class="hero">
+    <img class="hero-bg" src="/_assets/media/4f6dfcdadab9ea303d0e2b44344dd688.png" alt="" aria-hidden="true">
+    <h2 class="hero-title">Schedule</h2>
+  </section>
+
+  <!-- Section 3: Events -->
+  <section class="events">
+    <div class="event-card fade-in">
+      <h3 class="event-name">Ceremony</h3>
+      <p class="event-tagline">T0 BE WED</p>
+      <div class="event-details">
+        <p>Saturday, October Third at 12:00 PM</p>
+        <p>Valley Presbyterian Church</p>
+        <p>945 Portola Road</p>
+        <p>Portola Valley, CA</p>
+      </div>
+    </div>
+    <div class="event-card fade-in">
+      <h3 class="event-name">Reception</h3>
+      <p class="event-tagline">T0 BE FED</p>
+      <div class="event-details">
+        <p>Saturday, October Third at 5:00 PM</p>
+        <p>Harbor House</p>
+        <p>114 Broadway</p>
+        <p>Half Moon Bay, CA</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Timeline -->
+  <section class="timeline-section">
+    <h2 class="timeline-title fade-in">Our Timeline</h2>
+    <div class="timeline-grid">
+      <div class="timeline-item fade-in">
+        <div class="icon-wrap"><img src="/_assets/media/schedule_church.png" alt="Church"></div>
+        <p class="tl-time">11:30 AM</p>
+        <p class="tl-label">Meet &amp; Greet</p>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="icon-wrap"><img src="/_assets/media/schedule_ring_box.png" alt="Ring box"></div>
+        <p class="tl-time">12:00 PM</p>
+        <p class="tl-label">The Ceremony</p>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="icon-wrap"><img src="/_assets/media/schedule_car.png" alt="Car"></div>
+        <p class="tl-time">1:30 PM</p>
+        <p class="tl-label">Travel &amp; Refresh</p>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="icon-wrap"><img src="/_assets/media/schedule_cake_stand.png" alt="Cake stand"></div>
+        <p class="tl-time">4:00 PM</p>
+        <p class="tl-label">Cocktail Hour</p>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="icon-wrap"><img src="/_assets/media/schedule_dining_table.png" alt="Dining table"></div>
+        <p class="tl-time">5:00 PM</p>
+        <p class="tl-label">Dinner</p>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="icon-wrap"><img src="/_assets/media/schedule_heart_wreath.png" alt="Heart wreath"></div>
+        <p class="tl-time">6:00 PM</p>
+        <p class="tl-label">Cake Cutting</p>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="icon-wrap"><img src="/_assets/media/schedule_disco_ball.png" alt="Disco ball"></div>
+        <p class="tl-time">7:00 PM</p>
+        <p class="tl-label">Party</p>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="icon-wrap"><img src="/_assets/media/066e6548137bc498e07eefaaab4a22db.png" alt="Champagne"></div>
+        <p class="tl-time">9:00 PM</p>
+        <p class="tl-label">Farewells</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <a href="/invitation.html">&lt; Go Back</a>
+  </footer>
+
+</div>
+
+<script>
+(function() {
+  /* Fade-in animations */
+  var fadeEls = document.querySelectorAll('.fade-in');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  fadeEls.forEach(function(el, i) {
+    el.style.transitionDelay = (i * 0.1) + 's';
+    observer.observe(el);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dress Code</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/_assets/images/2d0b56e7e51cf11036ad8734bdb67e2d.png">
+<link rel="icon" href="/_assets/images/e53c4bd8da5e491d9ab09e7cf0daf874.png" sizes="192x192">
+<meta property="og:title" content="Dress Code">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="/css/dress-code-fonts.css">
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body { margin: 0; background: #fffaf0; color: #4b3526; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden; }
+img { display: block; max-width: none; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Header Bar ── */
+.header-bar {
+  background: #fffaf0;
+  height: 20vh;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 20px;
+  overflow: hidden;
+}
+.header-bar .subtitle {
+  font-family: YAFdJsyuOPM_1, sans-serif;
+  font-weight: 600;
+  font-size: clamp(10px, 2.5vw, 14px);
+  letter-spacing: 0.254em;
+  text-transform: uppercase;
+  color: #654040;
+  line-height: 2;
+}
+.header-bar .title {
+  font-family: YAFdJsyuOPM_1, sans-serif;
+  font-weight: 600;
+  font-size: clamp(24px, 7vw, 44px);
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: #553f2d;
+  line-height: 1.1;
+  margin-top: 5px;
+  text-align: center;
+}
+.header-bar .date-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 13px;
+}
+.header-bar .date-line .date-part {
+  font-family: YAFdJsyuOPM_1, sans-serif;
+  font-weight: 400;
+  font-size: clamp(7px, 1.8vw, 9.8px);
+  letter-spacing: 0.075em;
+  line-height: 15px;
+  color: #654040;
+  transform: translateY(-2px);
+}
+.header-bar .date-line .city {
+  font-family: YAGLy38gVoc_0, serif;
+  font-weight: 400;
+  font-size: clamp(16px, 4vw, 24px);
+  letter-spacing: -0.1em;
+  line-height: 34px;
+  color: #654040;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  height: 80vh;
+  min-height: 400px;
+  background: #fbceb1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.hero-title {
+  position: relative;
+  z-index: 1;
+  font-family: YAGLy38gVoc_0, serif;
+  font-size: clamp(50px, 13vw, 93px);
+  font-weight: 400;
+  color: #fffcf9;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+/* ── Content ── */
+.content {
+  background: #fffaf0;
+  padding: clamp(40px, 8vw, 80px) clamp(20px, 5vw, 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.content-text {
+  font-family: YAFcfr0ZwUA_0, serif;
+  font-size: clamp(14px, 2.5vw, 16px);
+  color: #4b3526;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-bottom: clamp(30px, 5vw, 50px);
+}
+
+/* ── Color Palette ── */
+.palette {
+  display: flex;
+  gap: clamp(8px, 2vw, 16px);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.swatch {
+  width: clamp(40px, 8vw, 53px);
+  height: clamp(52px, 10vw, 68px);
+  border-radius: 50% 50% 0 0 / 40% 40% 0 0;
+  transition: transform 0.3s ease;
+}
+.swatch:hover {
+  transform: scale(1.1);
+}
+
+/* ── Footer ── */
+.footer-nav {
+  background: #fffaf0;
+  padding: 30px 20px;
+  text-align: center;
+}
+.footer-nav a {
+  font-family: YAFdtQi73Xs_0, sans-serif;
+  font-weight: 600;
+  font-size: clamp(12px, 2vw, 14px);
+  letter-spacing: 0.382em;
+  text-transform: uppercase;
+  color: #4b3526;
+  transition: opacity 0.2s;
+}
+.footer-nav a:hover {
+  opacity: 0.7;
+}
+
+/* ── Fade-in Animation ── */
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+.fade-in.visible {
+  opacity: 1;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 50vh;
+  }
+  .palette {
+    gap: 10px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Header Bar -->
+<header class="header-bar">
+  <span class="subtitle">With love</span>
+  <h1 class="title">Frank AND Patrick</h1>
+  <div class="date-line">
+    <span class="date-part">10 03</span>
+    <span class="city">San Francisco</span>
+    <span class="date-part">2026</span>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <img class="hero-bg" src="/_assets/media/b3a630e106e7f631f5d66dfb28f82dac.webp" alt="Decorative ribbon artwork">
+  <h2 class="hero-title">Dress Code</h2>
+</section>
+
+<!-- Content -->
+<section class="content">
+  <p class="content-text fade-in">
+    We'd love for everyone to wear cocktail or semi-formal attire
+    inspired by the color palette below — something dressy, yet
+    comfortable enough to enjoy the festivities. We kindly ask
+    guests to avoid white, ivory, and light beige tones.
+  </p>
+
+  <div class="palette fade-in">
+    <div class="swatch" style="background: #ffeaac;" title="Gold"></div>
+    <div class="swatch" style="background: #fbceb1;" title="Light Peach"></div>
+    <div class="swatch" style="background: #f7b486;" title="Peach"></div>
+    <div class="swatch" style="background: #ceab90;" title="Tan"></div>
+    <div class="swatch" style="background: #b98d68;" title="Bronze"></div>
+    <div class="swatch" style="background: #553f2d;" title="Dark Brown"></div>
+  </div>
+</section>
+
+<!-- Footer Nav -->
+<nav class="footer-nav">
+  <a href="/invitation.html">&lt; go back</a>
+</nav>
+
+<script>
+(function() {
+  var fadeEls = document.querySelectorAll('.fade-in');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  fadeEls.forEach(function(el, i) {
+    el.style.transitionDelay = (i * 0.1) + 's';
+    observer.observe(el);
+  });
+})();
+</script>
+</body>
+</html>

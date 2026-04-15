@@ -66,8 +66,11 @@
   if (!overlay) return;
   function scaleSection3() {
     var vw = window.innerWidth;
-    if (vw < 700) {
-      var s = vw / 700;
+    var vh = window.innerHeight;
+    var sw = vw / 1728;
+    var sh = vh / 930;
+    var s = Math.min(sw, sh, 1);
+    if (s < 1) {
       overlay.style.transform = 'scale(' + s + ')';
       overlay.style.transformOrigin = 'center center';
     } else {
