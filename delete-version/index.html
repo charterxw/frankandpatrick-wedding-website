@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Frank &amp; Patrick</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/_assets/images/2d0b56e7e51cf11036ad8734bdb67e2d.png">
+<link rel="icon" href="/_assets/images/e53c4bd8da5e491d9ab09e7cf0daf874.png" sizes="192x192">
+<meta property="og:title" content="Frank &amp; Patrick">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="/css/envelope-fonts.css">
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: hidden; }
+body { margin: 0; background: #fffaf0; color: #4b3526; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Full-viewport centered layout ── */
+.envelope-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Text ── */
+.mail-label {
+  font-family: YAFdtQi73Xs_0, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.254em;
+  text-transform: uppercase;
+  color: #4b3526;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.mail-label.visible { opacity: 1; transform: translateY(0); }
+
+.couple-names {
+  font-family: YAGLy38gVoc_0, serif;
+  font-weight: 400;
+  font-size: 65px;
+  color: #4b3526;
+  line-height: 74px;
+  margin: 25px 0 16px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
+}
+.couple-names.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Envelope wrapper ── */
+.envelope-wrap {
+  position: relative;
+  width: 420px;
+  overflow: visible;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out 0.6s, transform 0.8s ease-out 0.6s;
+}
+.envelope-wrap.visible { opacity: 1; transform: translateY(0); }
+
+.envelope-link {
+  display: block;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+.envelope-link:hover { transform: scale(1.02); }
+.envelope-link img { width: 100%; }
+
+/* FP monogram on envelope */
+.envelope-monogram {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.env-oval {
+  width: 52px;
+  height: 70px;
+  border: 1px solid #fffcf9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* F oval — adjust independently */
+.env-oval-f {
+  transform: translateX(0);
+}
+.env-oval-f span {
+  transform: translate(-10px, -7px);
+}
+/* P oval — adjust independently */
+.env-oval-p {
+  margin-top: -72px;
+  transform: translateX(0);
+}
+.env-oval-p span {
+  transform: translate(0px, 6px);
+}
+.env-oval span {
+  font-family: YAGNIKItaEY_0, serif;
+  font-weight: 400;
+  font-size: 36px;
+  color: #fffcf9;
+  line-height: 1;
+}
+
+/* Flower decoration */
+.envelope-flower {
+  position: absolute;
+  right: -10%;
+  top: 41%;
+  width: 118px;
+  height: 207px;
+  transform: rotate(30.6deg);
+  pointer-events: none;
+}
+.envelope-flower img { width: 100%; height: 100%; object-fit: fill; }
+
+/* ── CTA ── */
+.open-label {
+  font-family: YAFdtQi73Xs_0, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.254em;
+  text-transform: uppercase;
+  color: #4b3526;
+  margin-top: 31px;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out 0.9s, transform 0.8s ease-out 0.9s;
+}
+.open-label.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Scaling wrapper ── */
+.scale-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: center center;
+  width: 670px;
+}
+</style>
+</head>
+<body>
+
+<section class="envelope-page">
+  <div class="scale-content" id="scaleWrap">
+  <p class="mail-label" id="anim1">You have mail from</p>
+  <p class="couple-names" id="anim2">Frank &amp;Patrick</p>
+
+  <div class="envelope-wrap" id="anim3">
+    <a href="/invitation.html" class="envelope-link" aria-label="Open invitation">
+      <img src="/_assets/media/086eeddf855aeec6cb4eb00d987a5d5d.webp" alt="Wedding invitation envelope">
+    </a>
+    <div class="envelope-monogram">
+      <div class="env-oval env-oval-f"><span>F</span></div>
+      <div class="env-oval env-oval-p"><span>P</span></div>
+    </div>
+    <div class="envelope-flower">
+      <img src="/_assets/media/a4718fab0b8766b3cad9bf139f530eac.webp" alt="">
+    </div>
+  </div>
+
+  <p class="open-label" id="anim4">Click envelope to open</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  /* Uniform scaling — matches original's scale(vw/630) logic */
+  var wrap = document.getElementById('scaleWrap');
+  function scaleContent() {
+    var vw = window.innerWidth;
+    if (vw < 630) {
+      var s = vw / 630;
+      wrap.style.transform = 'scale(' + s + ')';
+    } else {
+      wrap.style.transform = '';
+    }
+  }
+  window.addEventListener('resize', scaleContent);
+  scaleContent();
+
+  /* Staggered entrance animation */
+  setTimeout(function(){
+    ['anim1','anim2','anim3','anim4'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.classList.add('visible');
+    });
+  }, 200);
+})();
+</script>
+</body>
+</html>
