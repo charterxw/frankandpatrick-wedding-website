@@ -19,7 +19,8 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Landing wrapper (sections 1 + 2) ── */
 .landing {
-  height: 100vh;
+  height: 100vh; /* fallback */
+  height: calc(var(--real-vh, 1vh) * 100);
   display: flex;
   flex-direction: column;
 }
@@ -347,6 +348,20 @@ a { color: inherit; text-decoration: none; }
 
 <script>
 (function() {
+  /* Set --real-vh: use screen.height only on iOS to bypass Liquid Glass quirks */
+  function setRealVh() {
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isIOS) {
+      var h = window.screen.height + 50;
+      document.documentElement.style.setProperty('--real-vh', h / 100 + 'px');
+    } else {
+      document.documentElement.style.setProperty('--real-vh', window.innerHeight / 100 + 'px');
+    }
+  }
+  setRealVh();
+  window.addEventListener('resize', setRealVh);
+  window.addEventListener('orientationchange', function() { setTimeout(setRealVh, 200); });
+
   /* Always start from top on load/refresh */
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
