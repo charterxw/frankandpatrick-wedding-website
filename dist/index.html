@@ -196,19 +196,19 @@
     [
       { id: 'PB7TyQ7htGfkPYLp', ratio: 0.20 },
       { id: 'PBClDQPrWS06hXbc', ratio: 0.80, fill: true },
-      { id: 'PBFSmcmcPvKfPhpx', ratio: 1.0, fill: true, exactScale: true }
+      { id: 'PBFSmcmcPvKfPhpx', ratio: 1.0, fill: true }
     ],
     // rsvp
     [
       { id: 'PB3Bf6DcTqtzvKcB', ratio: 0.20 },
       { id: 'PBl0xtW3b9tzJj5h', ratio: 0.80, fill: true },
-      { id: 'PBwzFRlpFRfJMqSm', ratio: 1.0, fill: true, exactScale: true }
+      { id: 'PBwzFRlpFRfJMqSm', ratio: 1.0, fill: true }
     ],
     // details
     [
       { id: 'PBNnRlMBV0LlKbbq', ratio: 0.20 }, 
       { id: 'PBPdwswPcYc70z2z', ratio: 0.80, fill: true },
-      { id: 'PBtzVhDCRFMdnyWr', ratio: 1.0, fill: true, exactScale: true }
+      { id: 'PBtzVhDCRFMdnyWr', ratio: 1.0, fill: true }
     ],
     // dress-code
     [
@@ -219,7 +219,7 @@
     [
       { id: 'PBkkS62fQQN04z6S', ratio: 0.20 },
       { id: 'PBYJtGx79yrSvklQ', ratio: 0.80, fill: true },
-      { id: 'PBjG7drPxNT7xdNV', ratio: 1.0, fill: true, exactScale: true }
+      { id: 'PBjG7drPxNT7xdNV', ratio: 1.0, fill: true }
     ]
   ];
   var SECTIONS = [];
@@ -281,7 +281,15 @@
       n.section.style.setProperty('max-height', desiredH + 'px', 'important');
 
       n.inner.style.transformOrigin = 'top center';
-      n.inner.style.transform = (cfg.exactScale || scale < 1) ? 'scale(' + scale + ')' : '';
+      if (cfg.exactScale || scale < 1) {
+        var scaledH = actualH * scale;
+        var offsetY = (desiredH - scaledH) / 2;
+        n.inner.style.transform = 'translateY(' + offsetY + 'px) scale(' + scale + ')';
+      } else {
+        // Content fits without scaling — just vertically center it
+        var offsetY = (desiredH - actualH) / 2;
+        n.inner.style.transform = offsetY > 0 ? 'translateY(' + offsetY + 'px)' : '';
+      }
       n.inner.style.marginLeft = '';
 
       // Allow background images to bleed horizontally to the edges of the screen
@@ -388,6 +396,8 @@
         el.firstElementChild.style.display = '';
       }
     });
+    // Re-apply viewport scaling after revealing (RSVP & gifting section 3 need it)
+    setTimeout(applyScale, 50);
   }
 
   function checkScroll() {
