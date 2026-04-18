@@ -160,7 +160,7 @@
   #LBjKptBhg7L5cZm8 [style*="pointer-events: none"] { display: none !important; }
   /* Remove the inset clip-path on the blob image */
   #LBjKptBhg7L5cZm8 [style*="clip-path"] { clip-path: none !important; }
-  
+
 </style>
 <script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function() {
   function isInPriorityContainer(img) {
@@ -350,8 +350,11 @@
     applyScale();
     hideSection3Content();
     document.documentElement.classList.add('scaled');
+    // Scroll to top (both window and Canva's scroll container)
+    window.scrollTo(0, 0);
+    var scr = document.querySelector('.ZRRuDw');
+    if (scr) scr.scrollTop = 0;
     removeNavTransition();
-
   }
 
   var SCALED_PAGES = ['schedule','rsvp','details','dress-code','gifting'];
@@ -360,6 +363,9 @@
         var path = window.location.pathname.replace(/^\/|\/$/g, '');
         if (path !== '' && path !== 'invitation-flatlay') {
           window.scrollTo(0, 0);
+          setTimeout(function() { window.scrollTo(0, 0); }, 0);
+          var scr = document.querySelector('.ZRRuDw');
+          if (scr) scr.scrollTop = 0;
           if (SCALED_PAGES.indexOf(path) > -1) {
             if (!document.getElementById('nav-transition')) {
               var overlay = document.createElement('div');
@@ -449,6 +455,10 @@
       function onInitialLoad() {
         var path = window.location.pathname.replace(/^\/|\/$/g, '');
         if (path !== '' && path !== 'invitation-flatlay') {
+          window.scrollTo(0, 0);
+          setTimeout(function() { window.scrollTo(0, 0); }, 0);
+          var scr = document.querySelector('.ZRRuDw');
+          if (scr) scr.scrollTop = 0;
           SECTIONS = [];
           retries = 0;
           waitAndInit();
@@ -463,11 +473,27 @@
 </head><body><script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">document.documentElement.classList.replace('adaptive', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');</script><script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function(){
   var CONTAINERS = ['LBsHb65GgjhTMTDJ','LBjpDNklF8L9RmnB','LBFwxy5DLwMdlGb0','LBGXYzjw1FhWHVDJ','LB2lmxwJsW2QxRrv'];
   var active = false;
-  var hasVisited = false;
+  var hasLoaded = false;
+  function checkImages() {
+    var imgs = [];
+    for (var i = 0; i < CONTAINERS.length; i++) {
+      var el = document.querySelector('[data-key="' + CONTAINERS[i] + '"]');
+      if (el) {
+        var found = el.getElementsByTagName('img');
+        for (var j = 0; j < found.length; j++) imgs.push(found[j]);
+      }
+    }
+    if (imgs.length === 0) return false;
+    for (var k = 0; k < imgs.length; k++) {
+      if (!imgs[k].complete || imgs[k].naturalWidth === 0) return false;
+    }
+    return true;
+  }
   function showLoader() {
-    if (active || hasVisited) return;
+    if (active) return;
+    // Skip loader if images are already cached in DOM or were loaded before
+    if (hasLoaded || checkImages()) return;
     active = true;
-    hasVisited = true;
     document.documentElement.classList.remove('flatlay-ready');
     var loader = document.createElement('div');
     loader.id = 'flatlay-loader';
@@ -478,25 +504,11 @@
       if (removed) return;
       removed = true;
       active = false;
+      hasLoaded = true;
       loader.classList.add('fade-out');
       setTimeout(function() { loader.remove(); }, 500);
     }
     setTimeout(removeLoader, 5000);
-    function checkImages() {
-      var imgs = [];
-      for (var i = 0; i < CONTAINERS.length; i++) {
-        var el = document.querySelector('[data-key="' + CONTAINERS[i] + '"]');
-        if (el) {
-          var found = el.getElementsByTagName('img');
-          for (var j = 0; j < found.length; j++) imgs.push(found[j]);
-        }
-      }
-      if (imgs.length === 0) return false;
-      for (var k = 0; k < imgs.length; k++) {
-        if (!imgs[k].complete || imgs[k].naturalWidth === 0) return false;
-      }
-      return true;
-    }
     var poll = setInterval(function() {
       if (checkImages()) { clearInterval(poll); removeLoader(); }
     }, 100);
