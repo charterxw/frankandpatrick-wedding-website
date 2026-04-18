@@ -283,22 +283,28 @@
       n.section.firstElementChild.style.setProperty('overflow', 'visible', 'important');
       n.inner.style.setProperty('overflow', 'visible', 'important');
 
-      // Scale up the background layer to behave like object-fit: cover
+      // Background hero sections: object-fit cover + center
       if (['PBClDQPrWS06hXbc', 'PBl0xtW3b9tzJj5h', 'PBPdwswPcYc70z2z', 'PBPB4HwDqv4JP5Xg', 'PBYJtGx79yrSvklQ'].indexOf(cfg.id) !== -1) {
+        n.section.style.setProperty('overflow', 'hidden', 'important');
+
+        var actualW = parseFloat(n.inner.style.width) || n.inner.offsetWidth || 1366;
+        var sectionW = n.section.offsetWidth;
+        // Cover: scale to fill whichever dimension is short
+        var coverScale = Math.max(sectionW / actualW, desiredH / actualH);
+        var scaledW = actualW * coverScale;
+        var scaledH = actualH * coverScale;
+        // Center both axes
+        var offsetX = (sectionW - scaledW) / 2;
+        var offsetY = (desiredH - scaledH) / 2;
+        n.inner.style.transformOrigin = 'top left';
+        n.inner.style.transform = 'translate(' + offsetX + 'px, ' + offsetY + 'px) scale(' + coverScale + ')';
+
         var bgLayer = n.inner.firstElementChild;
         if (bgLayer) {
-          var actualW = parseFloat(n.inner.style.width) || n.inner.offsetWidth || 1366;
-          var scaleX = n.section.offsetWidth / (actualW * (scale || 1));
-          var scaleY = desiredH / (actualH * (scale || 1));
-          var bgScale = Math.max(1.02, scaleX, scaleY);
-          var shiftY = (desiredH - (actualH * (scale || 1))) / 2 / (scale || 1);
-          bgLayer.style.setProperty('transform', 'translateY(' + shiftY + 'px) scale(' + bgScale + ')', 'important');
-          bgLayer.style.setProperty('transform-origin', 'center center', 'important');
-          
-          var insetY = (actualH * (1 - scaleY / bgScale)) / 2;
-          var insetX = (actualW * (1 - scaleX / bgScale)) / 2;
-          bgLayer.style.setProperty('clip-path', 'inset(' + insetY + 'px ' + insetX + 'px)', 'important');
-          bgLayer.style.setProperty('-webkit-clip-path', 'inset(' + insetY + 'px ' + insetX + 'px)', 'important');
+          bgLayer.style.removeProperty('transform');
+          bgLayer.style.removeProperty('transform-origin');
+          bgLayer.style.removeProperty('clip-path');
+          bgLayer.style.removeProperty('-webkit-clip-path');
         }
       }
     });
