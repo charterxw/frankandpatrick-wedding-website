@@ -61,7 +61,8 @@
   .subpage #PBFSmcmcPvKfPhpx,
   .subpage #PBwzFRlpFRfJMqSm,
   .subpage #PBtzVhDCRFMdnyWr,
-  .subpage #PBjG7drPxNT7xdNV {
+  .subpage #PBjG7drPxNT7xdNV,
+  .subpage #PBGBT5PxFDhdF13Q {
     visibility: hidden;
     opacity: 0;
   }
@@ -78,10 +79,13 @@
   .scaled #PBFSmcmcPvKfPhpx,
   .scaled #PBwzFRlpFRfJMqSm,
   .scaled #PBtzVhDCRFMdnyWr,
-  .scaled #PBjG7drPxNT7xdNV {
+  .scaled #PBjG7drPxNT7xdNV,
+  .scaled #PBGBT5PxFDhdF13Q {
     visibility: visible;
     opacity: 1;
   }
+
+  /* Section 3: placeholder kept in layout, content hidden via JS */
 
   /* Section 1 fallback (~20vh) */
   .subpage #PB7TyQ7htGfkPYLp,
@@ -117,6 +121,8 @@
     position: relative !important;
     z-index: 1;
   }
+
+
 
 
   /* Loading overlay */
@@ -328,8 +334,10 @@
       return;
     }
     applyScale();
+    hideSection3Content();
     document.documentElement.classList.add('scaled');
     removeNavTransition();
+
   }
 
   var SCALED_PAGES = ['schedule','rsvp','details','dress-code','gifting'];
@@ -349,6 +357,7 @@
             SECTIONS = [];
             retries = 0;
             waitAndInit();
+            initScrollReveal();
           }
         } else {
           document.documentElement.classList.remove('subpage');
@@ -358,6 +367,62 @@
 
   window.addEventListener('resize', applyScale);
   window.addEventListener('popstate', onNavigate);
+
+  // Scroll-triggered reveal for section 3
+  var SECTION3_IDS = ['PBFSmcmcPvKfPhpx','PBwzFRlpFRfJMqSm','PBtzVhDCRFMdnyWr','PBjG7drPxNT7xdNV','PBGBT5PxFDhdF13Q'];
+  var s3revealed = false;
+
+  function hideSection3Content() {
+    SECTION3_IDS.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && el.firstElementChild) {
+        el.firstElementChild.style.display = 'none';
+      }
+    });
+  }
+
+  function showSection3Content() {
+    SECTION3_IDS.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && el.firstElementChild) {
+        el.firstElementChild.style.display = '';
+      }
+    });
+  }
+
+  function checkScroll() {
+    if (s3revealed) return;
+    // Find Canva's scroll container
+    var scroller = document.querySelector('.ZRRuDw') || document.scrollingElement;
+    var scrollTop = scroller ? scroller.scrollTop : window.scrollY;
+    var maxScroll = scroller ? scroller.scrollHeight - scroller.clientHeight : 0;
+    // Adaptive threshold: use 50% of viewport or 30% of available scroll, whichever is smaller
+    var threshold = Math.min(window.innerHeight * 0.5, maxScroll * 0.3);
+    if (scrollTop > Math.max(threshold, 10)) {
+      s3revealed = true;
+      showSection3Content();
+    }
+  }
+
+  function initScrollReveal() {
+    s3revealed = false;
+    hideSection3Content();
+    // Listen on Canva's scroll container
+    var tryBind = function() {
+      var scroller = document.querySelector('.ZRRuDw');
+      if (scroller) {
+        scroller.addEventListener('scroll', checkScroll, { passive: true });
+      } else {
+        window.addEventListener('scroll', checkScroll, { passive: true });
+        // Retry to find Canva scroller
+        setTimeout(function() {
+          var s = document.querySelector('.ZRRuDw');
+          if (s) s.addEventListener('scroll', checkScroll, { passive: true });
+        }, 2000);
+      }
+    };
+    tryBind();
+  }
 
   var _origPushState = history.pushState.bind(history);
   history.pushState = function () {
@@ -372,6 +437,7 @@
           retries = 0;
           waitAndInit();
         }
+        initScrollReveal();
   }
 
   document.readyState === 'loading'
