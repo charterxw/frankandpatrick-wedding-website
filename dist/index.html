@@ -1049,6 +1049,7 @@
   var CONTAINERS = ['LBsHb65GgjhTMTDJ','LBjpDNklF8L9RmnB','LBFwxy5DLwMdlGb0','LBGXYzjw1FhWHVDJ','LB2lmxwJsW2QxRrv'];
   var active = false;
   var hasLoaded = false;
+  try { hasLoaded = sessionStorage.getItem('flatlayLoaded') === '1'; } catch(e) {}
   function checkImages() {
     var imgs = [];
     for (var i = 0; i < CONTAINERS.length; i++) {
@@ -1080,6 +1081,7 @@
       removed = true;
       active = false;
       hasLoaded = true;
+      try { sessionStorage.setItem('flatlayLoaded', '1'); } catch(e) {}
       loader.classList.add('fade-out');
       setTimeout(function() { loader.remove(); }, 500);
     }
