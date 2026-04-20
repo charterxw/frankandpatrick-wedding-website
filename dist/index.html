@@ -674,6 +674,31 @@
     opacity: 0.85;
   }
 
+  /* Gifting overlay mobile: fit everything in one viewport */
+  @media (max-height: 750px) {
+    #gifting-overlay .gift-card { padding: 40px 28px 24px; }
+    #gifting-overlay .gift-progress { margin-bottom: 24px; }
+    #gifting-overlay .gift-title { font-size: 22px; margin-bottom: 20px; }
+    #gifting-overlay .gift-amount-box { padding: 16px 12px; }
+    #gifting-overlay .gift-amount-box input { font-size: 32px; }
+    #gifting-overlay .gift-presets { margin-bottom: 20px; gap: 8px; }
+    #gifting-overlay .gift-preset-btn { padding: 8px 16px; font-size: 13px; }
+    #gifting-overlay .gift-message-area { min-height: 100px; }
+    #gifting-overlay .gift-summary-note { margin-bottom: 16px; }
+  }
+  @media (max-height: 600px) {
+    #gifting-overlay .gift-card { padding: 32px 20px 16px; }
+    #gifting-overlay .gift-progress { margin-bottom: 16px; }
+    #gifting-overlay .gift-title { font-size: 20px; margin-bottom: 12px; }
+    #gifting-overlay .gift-amount-box { padding: 12px 10px; }
+    #gifting-overlay .gift-amount-box input { font-size: 28px; }
+    #gifting-overlay .gift-presets { margin-bottom: 12px; }
+    #gifting-overlay .gift-preset-btn { padding: 6px 12px; font-size: 12px; }
+    #gifting-overlay .gift-helper { margin-bottom: 12px; }
+    #gifting-overlay .gift-message-area { min-height: 80px; }
+    #gifting-overlay .gift-summary-note { margin-bottom: 8px; }
+  }
+
   /* Thank You Overlay */
   #gift-thankyou-overlay {
     display: none;
