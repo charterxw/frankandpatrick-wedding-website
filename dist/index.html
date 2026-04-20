@@ -1093,7 +1093,7 @@
 
       <div class="gift-footer">
         <button class="gift-back-btn" data-goto="2">&#x2039;</button>
-        <button class="gift-submit-btn" id="gift-submit">Pay with Stripe</button>
+        <button class="gift-submit-btn" id="gift-submit">Pay</button>
       </div>
     </div>
   </div>
@@ -1267,13 +1267,13 @@
         window.location.href = data.url;
       } else {
         alert('Something went wrong. Please try again.');
-        submitBtn.textContent = 'Pay with Stripe';
+        submitBtn.textContent = 'Pay';
         submitBtn.disabled = false;
       }
     })
     .catch(function() {
       alert('Connection error. Please try again.');
-      submitBtn.textContent = 'Pay with Stripe';
+      submitBtn.textContent = 'Pay';
       submitBtn.disabled = false;
     });
   });
