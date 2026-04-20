@@ -43,8 +43,9 @@ export async function onRequestPost(context) {
     const session = await response.json();
 
     if (!response.ok) {
-      console.error('Stripe error:', session);
-      return new Response(JSON.stringify({ error: 'Failed to create checkout session' }), {
+      console.error('Stripe error:', JSON.stringify(session));
+      const msg = session.error ? session.error.message : JSON.stringify(session);
+      return new Response(JSON.stringify({ error: msg }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
