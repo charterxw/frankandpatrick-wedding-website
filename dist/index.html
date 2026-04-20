@@ -358,7 +358,7 @@
     color: #4b3526;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
     box-sizing: border-box;
   }
   #gifting-overlay .gift-close {
@@ -611,6 +611,11 @@
   #gifting-overlay .gift-qr-section {
     text-align: center;
     margin: 8px 0 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   #gifting-overlay .gift-qr-box {
     width: 200px;
@@ -630,6 +635,14 @@
     line-height: 1.6;
     max-width: 300px;
     margin: 0 auto;
+  }
+  #gifting-overlay .gift-stripe-note {
+    font-size: 13px;
+    color: #9a8577;
+    line-height: 1.6;
+    max-width: 340px;
+    margin: 0 auto;
+    text-align: center;
   }
   #gifting-overlay .gift-submit-btn {
     display: flex;
@@ -1074,17 +1087,13 @@
         <div class="gift-summary-note-text" id="gift-confirm-note"></div>
       </div>
 
-      <div class="gift-qr-section">
-        <div class="gift-qr-box">Venmo QR Code</div>
-        <div class="gift-qr-instructions">
-          Scan the QR code above with your Venmo app to send your gift.<br>
-          Once the payment is complete, tap <strong>Submit</strong> below to let us know.
-        </div>
+      <div class="gift-stripe-note">
+        You will be redirected to a secure Stripe payment page to complete your gift. Your note will be included with the payment.
       </div>
 
       <div class="gift-footer">
         <button class="gift-back-btn" data-goto="2">&#x2039;</button>
-        <button class="gift-submit-btn" id="gift-submit">Submit</button>
+        <button class="gift-submit-btn" id="gift-submit">Pay with Stripe</button>
       </div>
     </div>
   </div>
@@ -1236,6 +1245,38 @@
       node = node.parentElement;
     }
   }, true);
+
+  // Stripe Checkout via Cloudflare Pages Function
+  var submitBtn = overlay.querySelector('#gift-submit');
+  submitBtn.addEventListener('click', function() {
+    var amt = parseInt(amountInput.value.replace(/[^0-9]/g, ''), 10) || 0;
+    if (amt < 1) { alert('Please enter a gift amount.'); goToStep(1); return; }
+    var note = (overlay.querySelector('#gift-message').value || '').trim();
+
+    submitBtn.textContent = 'Processing...';
+    submitBtn.disabled = true;
+
+    fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: amt, note: note })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Something went wrong. Please try again.');
+        submitBtn.textContent = 'Pay with Stripe';
+        submitBtn.disabled = false;
+      }
+    })
+    .catch(function() {
+      alert('Connection error. Please try again.');
+      submitBtn.textContent = 'Pay with Stripe';
+      submitBtn.disabled = false;
+    });
+  });
 })();</script>
 <div id="rsvp-overlay">
   <div class="rsvp-card">
