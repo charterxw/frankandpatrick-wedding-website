@@ -1261,18 +1261,23 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount: amt, note: note })
     })
-    .then(function(res) { return res.json(); })
+    .then(function(res) {
+      if (!res.ok) console.error('API status:', res.status);
+      return res.json().catch(function() { return res.text().then(function(t) { throw new Error('Not JSON: ' + t.substring(0, 200)); }); });
+    })
     .then(function(data) {
+      console.log('API response:', data);
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert('Something went wrong. Please try again.');
+        alert('Error: ' + (data.error || JSON.stringify(data)));
         submitBtn.textContent = 'Pay';
         submitBtn.disabled = false;
       }
     })
-    .catch(function() {
-      alert('Connection error. Please try again.');
+    .catch(function(err) {
+      console.error('Fetch error:', err);
+      alert('Error: ' + err.message);
       submitBtn.textContent = 'Pay';
       submitBtn.disabled = false;
     });
