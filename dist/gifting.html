@@ -61,45 +61,245 @@
     var btnEls = {};
     for (var i = 0; i < amounts.length; i++) {
       var span = findByText(document, amounts[i]);
-      if (!span) return false;
+      if (!span) { console.log('[gifting] not found: ' + amounts[i]); return false; }
       btnEls[amounts[i]] = getBoxParent(span);
     }
 
-    // Find the $ sign span, walk up to its box, then get next sibling div = amount field
-    var dollarSpan = findByText(document, '$');
-    if (!dollarSpan) return false;
-    var dollarBox = getBoxParent(dollarSpan);
-    var amountBox = dollarBox.nextElementSibling;
-    if (!amountBox) return false;
+    // Find amount field: deepest p's span in next sibling of LB99xd5lNRDBmb8M element
+    var dollarEl = document.querySelector('[id*="LB99xd5lNRDBmb8M"]') ||
+                   document.querySelector('[data-elements-id="LB99xd5lNRDBmb8M"]') ||
+                   document.querySelector('[class*="LB99xd5lNRDBmb8M"]');
+    // Fallback: search all elements for attribute containing the ID
+    if (!dollarEl) {
+      var allEls = document.querySelectorAll('*');
+      for (var i = 0; i < allEls.length; i++) {
+        var attrs = allEls[i].attributes;
+        for (var j = 0; j < attrs.length; j++) {
+          if (attrs[j].value && attrs[j].value.indexOf('LB99xd5lNRDBmb8M') !== -1) {
+            dollarEl = allEls[i];
+            console.log('[gifting] found $ element via attr:', attrs[j].name, '=', attrs[j].value);
+            break;
+          }
+        }
+        if (dollarEl) break;
+      }
+    }
+    if (!dollarEl) { console.log('[gifting] LB99xd5lNRDBmb8M not found'); return false; }
+    console.log('[gifting] dollarEl:', dollarEl.tagName, dollarEl.className);
 
-    // Find the deepest span inside the amount box to edit
-    var amountSpan = amountBox.querySelector('span') || amountBox;
-    console.log('[gifting] amountBox text:', amountSpan.textContent.trim());
+    // Walk up until we find a parent that has a nextElementSibling
+    var node = dollarEl;
+    while (node && !node.nextElementSibling) { node = node.parentElement; }
+    var amountDiv = node ? node.nextElementSibling : null;
+    if (!amountDiv) { console.log('[gifting] no sibling div for amount'); return false; }
+    console.log('[gifting] amountDiv:', amountDiv.tagName, 'text:', amountDiv.textContent.trim().substring(0,30));
 
-    // Make editable
+    // Find deepest p's span
+    var allPs = amountDiv.querySelectorAll('p');
+    var amountSpan = null;
+    for (var i = 0; i < allPs.length; i++) {
+      var sp = allPs[i].querySelector('span');
+      if (sp) amountSpan = sp; // keep last (deepest)
+    }
+    if (!amountSpan) amountSpan = amountDiv.querySelector('span') || amountDiv;
+    console.log('[gifting] amountSpan:', amountSpan.tagName, 'text:', amountSpan.textContent.trim());
+
+    // Make amount editable
     amountSpan.contentEditable = 'true';
     amountSpan.style.outline = 'none';
     amountSpan.style.cursor = 'text';
     amountSpan.style.minWidth = '40px';
     amountSpan.style.display = 'inline-block';
 
+    // Helper: get just the numeric part
+    function getNumeric(text) {
+      return text.replace(/[^0-9]/g, '');
+    }
+
+    // Ensure $ is always at the start, cap at 500
+    function ensureDollar() {
+      var num = getNumeric(amountSpan.textContent);
+      if (num && parseInt(num, 10) > 500) num = '500';
+      if (num) {
+        amountSpan.textContent = '$' + num;
+      } else {
+        amountSpan.textContent = '$';
+      }
+      // Move cursor to end
+      var range = document.createRange();
+      var sel = window.getSelection();
+      range.selectNodeContents(amountSpan);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
     amountSpan.addEventListener('focus', function() {
-      if (amountSpan.textContent.trim() === 'Enter Amount') amountSpan.textContent = '';
+      var val = amountSpan.textContent.trim();
+      if (val === 'Enter Amount') {
+        amountSpan.textContent = '$';
+        // Move cursor after $
+        var range = document.createRange();
+        var sel = window.getSelection();
+        range.selectNodeContents(amountSpan);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
     });
     amountSpan.addEventListener('blur', function() {
-      if (amountSpan.textContent.trim() === '') amountSpan.textContent = 'Enter Amount';
+      var num = getNumeric(amountSpan.textContent);
+      if (!num) amountSpan.textContent = 'Enter Amount';
+      else {
+        if (parseInt(num, 10) > 500) num = '500';
+        amountSpan.textContent = '$' + num;
+      }
     });
 
-    // Wire buttons
+    // Only allow numbers, prevent deleting the $
+    amountSpan.addEventListener('keydown', function(e) {
+      // Allow navigation keys
+      if (['ArrowLeft','ArrowRight','Home','End','Tab'].indexOf(e.key) !== -1) return;
+      // Allow backspace/delete but protect the $
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        var num = getNumeric(amountSpan.textContent);
+        if (num.length === 0) { e.preventDefault(); return; }
+        // Let it happen, then fix
+        setTimeout(ensureDollar, 0);
+        return;
+      }
+      // Block non-numeric
+      if (e.key && e.key.length === 1 && !/[0-9]/.test(e.key)) { e.preventDefault(); return; }
+      // Allow the number, then fix
+      setTimeout(ensureDollar, 0);
+    });
+
+    // Catch paste
+    amountSpan.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var text = (e.clipboardData || window.clipboardData).getData('text');
+      var num = text.replace(/[^0-9]/g, '');
+      if (num) {
+        var current = getNumeric(amountSpan.textContent);
+        var combined = parseInt(current + num, 10);
+        if (combined > 500) combined = 500;
+        amountSpan.textContent = '$' + combined;
+        var range = document.createRange();
+        var sel = window.getSelection();
+        range.selectNodeContents(amountSpan);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    });
+
+    // Track active button
+    var activeBtn = null;
+
+    // Helper: find the oval for a button by walking up from its text span
+    function findOvalInfo(btnSpan) {
+      var n = btnSpan;
+      for (var u = 0; u < 15; u++) {
+        if (!n.parentElement) break;
+        n = n.parentElement;
+        if (n.previousElementSibling) {
+          var ov = n.previousElementSibling;
+          var svgs = ov.querySelectorAll('svg');
+          var paths = ov.querySelectorAll('path');
+          var rects = ov.querySelectorAll('rect');
+          var ellipses = ov.querySelectorAll('ellipse');
+          console.log('[gifting] oval:', ov.tagName, 'svgs:', svgs.length, 'paths:', paths.length, 'rects:', rects.length, 'ellipses:', ellipses.length);
+          // Collect all fillable SVG shapes
+          var allShapes = [];
+          paths.forEach(function(p) { allShapes.push(p); });
+          rects.forEach(function(r) { allShapes.push(r); });
+          ellipses.forEach(function(e) { allShapes.push(e); });
+          // Store original fills
+          var origFills = allShapes.map(function(s) { return s.getAttribute('fill'); });
+          return { el: ov, shapes: allShapes, origFills: origFills };
+        }
+      }
+      return null;
+    }
+
+    // Store button data
+    var buttonData = [];
     Object.keys(btnEls).forEach(function(label) {
       var btn = btnEls[label];
       var value = label.replace('$', '');
       btn.style.cursor = 'pointer';
+
+      var btnSpan = findByText(document, label);
+      var ovalInfo = findOvalInfo(btnSpan);
+      var origColor = btnSpan ? window.getComputedStyle(btnSpan).color : '';
+
+      buttonData.push({ btn: btn, label: label, value: value, ovalInfo: ovalInfo, btnSpan: btnSpan, origColor: origColor });
+
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
-        amountSpan.textContent = value;
-        console.log('[gifting] set amount to ' + value);
+
+        // Reset all
+        buttonData.forEach(function(bd) {
+          if (bd.ovalInfo) {
+            for (var p = 0; p < bd.ovalInfo.shapes.length; p++) {
+              var orig = bd.ovalInfo.origFills[p];
+              if (orig) bd.ovalInfo.shapes[p].setAttribute('fill', orig);
+              else bd.ovalInfo.shapes[p].removeAttribute('fill');
+              bd.ovalInfo.shapes[p].style.fill = '';
+            }
+          }
+          if (bd.btnSpan) bd.btnSpan.style.color = bd.origColor;
+        });
+
+        // Highlight selected
+        if (ovalInfo) {
+          // Fill all SVG shapes
+          for (var p = 0; p < ovalInfo.shapes.length; p++) {
+            ovalInfo.shapes[p].setAttribute('fill', '#4b3526');
+            ovalInfo.shapes[p].style.fill = '#4b3526';
+          }
+        }
+        if (btnSpan) btnSpan.style.color = '#fffaf0';
+        activeBtn = label;
+
+        // Set amount value
+        amountSpan.textContent = '$' + value;
+        console.log('[gifting] set amount to $' + value);
       });
+    });
+
+    // When user types a custom amount, highlight matching button or deselect all
+    amountSpan.addEventListener('input', function() {
+      var typed = amountSpan.textContent.trim().replace(/^\$/, '');
+      var matched = null;
+      buttonData.forEach(function(bd) {
+        if (bd.value === typed) matched = bd;
+      });
+
+      // Reset all first
+      buttonData.forEach(function(bd) {
+        if (bd.ovalInfo) {
+          for (var p = 0; p < bd.ovalInfo.shapes.length; p++) {
+            var orig = bd.ovalInfo.origFills[p];
+            if (orig) bd.ovalInfo.shapes[p].setAttribute('fill', orig);
+            else bd.ovalInfo.shapes[p].removeAttribute('fill');
+            bd.ovalInfo.shapes[p].style.fill = '';
+          }
+        }
+        if (bd.btnSpan) bd.btnSpan.style.color = bd.origColor;
+      });
+
+      // If typed value matches a button, highlight it
+      if (matched && matched.ovalInfo) {
+        for (var p = 0; p < matched.ovalInfo.shapes.length; p++) {
+          matched.ovalInfo.shapes[p].setAttribute('fill', '#4b3526');
+          matched.ovalInfo.shapes[p].style.fill = '#4b3526';
+        }
+        if (matched.btnSpan) matched.btnSpan.style.color = '#fffaf0';
+        activeBtn = matched.label;
+      } else {
+        activeBtn = null;
+      }
     });
 
     console.log('[gifting] setup complete');
@@ -110,7 +310,7 @@
   var timer = setInterval(function() {
     tries++;
     if (setup()) clearInterval(timer);
-    else if (tries > 150) { console.log('[gifting] gave up'); clearInterval(timer); }
+    else if (tries > 150) { console.log('[gifting] gave up after 150 tries'); clearInterval(timer); }
   }, 200);
 })();
 </script>
