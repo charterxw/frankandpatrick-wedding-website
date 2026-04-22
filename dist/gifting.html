@@ -46,12 +46,13 @@
         var range = document.createRange();
         range.selectNodeContents(el);
         range.collapse(false);
+        sel.removeAllRanges();
         sel.addRange(range);
       } catch(err) {}
     });
   }
 
-  // --- PAGE 1 SETUP ---
+  // --- PAGE 1 SETUP (100% UNTOUCHED FROM YOUR UPLOADED FILE) ---
   function setup() {
     function findByText(root, text) {
       var spans = root.querySelectorAll('span');
@@ -316,7 +317,7 @@
     return true;
   }
 
-  // --- PAGE 2 SETUP ---
+  // --- PAGE 2 SETUP (100% UNTOUCHED FROM YOUR UPLOADED FILE) ---
   function setupPage2() {
     var noteEl = null;
     var allEls = document.querySelectorAll('*');
@@ -399,80 +400,125 @@
     return true;
   }
 
- // --- PAGE 3 SETUP (WITH AUTO-WRAPPING & ELEMENT PUSHING) ---
+  // --- PAGE 3 SETUP (DYNAMIC EXACT BOTTOM ALIGNMENT WITH REFLOW) ---
   function setupPage3() {
-    var spans = document.querySelectorAll('span');
-    var amountValSpan = null;
-    var noteValSpan = null;
+    try {
+      var spans = document.querySelectorAll('span');
+      var amountValSpan = null;
+      var noteValSpan = null;
 
-    for (var i = 0; i < spans.length; i++) {
-      var txt = spans[i].textContent.trim();
-      
-      if (txt === 'Gift amount') {
-        var container = spans[i].closest('p') || spans[i].parentElement;
-        if (container && container.nextElementSibling) {
-          amountValSpan = container.nextElementSibling.querySelector('span') || container.nextElementSibling;
+      for (var i = 0; i < spans.length; i++) {
+        var txt = spans[i].textContent.trim();
+        if (txt === 'Gift amount') {
+          var container1 = spans[i].closest('p') || spans[i].parentElement;
+          if (container1 && container1.nextElementSibling) amountValSpan = container1.nextElementSibling.querySelector('span') || container1.nextElementSibling;
+        }
+        if (txt === 'Note') {
+          var container2 = spans[i].closest('p') || spans[i].parentElement;
+          if (container2 && container2.nextElementSibling) noteValSpan = container2.nextElementSibling.querySelector('span') || container2.nextElementSibling;
         }
       }
-      
-      if (txt === 'Note') {
-        var container = spans[i].closest('p') || spans[i].parentElement;
-        if (container && container.nextElementSibling) {
-          noteValSpan = container.nextElementSibling.querySelector('span') || container.nextElementSibling;
-        }
-      }
-    }
 
-    // Sync Amount
-    if (amountValSpan) {
-      var savedAmount = sessionStorage.getItem('giftingAmount');
-      if (savedAmount) {
-        amountValSpan.textContent = '$' + savedAmount;
-      }
-    }
-
-    // Sync Note with Wrapping and "Push" logic
-    if (noteValSpan) {
-      var savedNote = sessionStorage.getItem('giftingNote');
-      var noteToDisplay = (savedNote && savedNote !== 'Start typing here...') ? savedNote : '';
-      
-      if (noteValSpan.textContent !== noteToDisplay) {
-        // 1. Enable wrapping
-        noteValSpan.style.whiteSpace = 'normal';
-        noteValSpan.style.wordBreak = 'break-word';
-        noteValSpan.style.display = 'block';
-        noteValSpan.textContent = noteToDisplay;
-
-        // 2. Calculate height change to push the line down
-        // We look at the parent container's height to see how much it grew
-        var container = noteValSpan.parentElement;
-        var currentHeight = noteValSpan.offsetHeight;
-        var originalHeight = 24; // Average height of a single line in this template
-        var extraShift = currentHeight - originalHeight;
-
-        if (extraShift > 0) {
-          // Find the underline and elements below it to push them down
-          var currentEl = container.parentElement; 
-          while (currentEl && currentEl.nextElementSibling) {
-            currentEl = currentEl.nextElementSibling;
-            
-            // Check if this is an absolute positioned Canva layer
-            var style = window.getComputedStyle(currentEl);
-            if (style.position === 'absolute') {
-              var currentTop = parseFloat(style.top);
-              // Only shift once by adding a marker
-              if (!currentEl._hasBeenShifted) {
-                currentEl.style.top = (currentTop + extraShift) + 'px';
-                currentEl._hasBeenShifted = true;
-              }
-            }
+      if (amountValSpan) {
+        var savedAmount = sessionStorage.getItem('giftingAmount');
+        if (savedAmount) {
+          var expectedAmt = '$' + savedAmount;
+          if (amountValSpan.textContent !== expectedAmt) {
+            amountValSpan.textContent = expectedAmt;
           }
         }
       }
-    }
+
+      if (noteValSpan) {
+        var savedNote = sessionStorage.getItem('giftingNote');
+        var noteDisplay = (savedNote && savedNote !== 'Start typing here...') ? savedNote : '';
+        
+        if (noteValSpan.textContent !== noteDisplay) {
+          
+          noteValSpan.style.setProperty('white-space', 'pre-wrap', 'important');
+          noteValSpan.style.setProperty('word-break', 'break-word', 'important');
+          noteValSpan.style.setProperty('display', 'block', 'important');
+          
+          var masterContainer = noteValSpan;
+          for (var u = 0; u < 8; u++) {
+            if (!masterContainer || masterContainer.tagName === 'BODY') break;
+            if (window.getComputedStyle(masterContainer).position === 'absolute') {
+               if (!masterContainer.id) masterContainer.id = 'gifting-note-unclip-target';
+               break;
+            }
+            masterContainer = masterContainer.parentElement;
+          }
+
+          if (!document.getElementById('gifting-global-css')) {
+              var css = document.createElement('style');
+              css.id = 'gifting-global-css';
+              css.innerHTML = `
+                  #gifting-note-unclip-target, #gifting-note-unclip-target * {
+                      overflow: visible !important;
+                      clip-path: none !important;
+                  }
+                  /* Unrestricts the exact path you pinpointed */
+                  [class*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) td div,
+                  [id*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) td div,
+                  [data-elements-id*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) td div {
+                      height: auto !important;
+                      max-height: none !important;
+                  }
+              `;
+              document.head.appendChild(css);
+          }
+
+          noteValSpan.textContent = noteDisplay;
+
+          setTimeout(function() {
+            var deepDiv = document.querySelector('[class*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) > td > div > div > div') || 
+                          document.querySelector('[id*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) > td > div > div > div') || 
+                          document.querySelector('[data-elements-id*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) > td > div > div > div') ||
+                          document.querySelector('[class*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) td div');
+                          
+            if (!deepDiv) return;
+            
+            var lineTarget = document.querySelector('[class*="LBHGJqcccdX3tmD5"]') || 
+                             document.querySelector('[id*="LBHGJqcccdX3tmD5"]') || 
+                             document.querySelector('[data-elements-id*="LBHGJqcccdX3tmD5"]');
+                             
+            if (lineTarget) {
+              var pLine = lineTarget;
+              for (var i = 0; i < 5; i++) {
+                if (!pLine || pLine.tagName === 'BODY') break;
+                if (window.getComputedStyle(pLine).position === 'absolute') {
+                  
+                  // 1. Reset margin to get a clean, native measurement
+                  pLine.style.marginTop = '0px';
+                  
+                  // 2. FORCE BROWSER REFLOW (Fixes the freeze!)
+                  void pLine.offsetHeight; 
+                  
+                  // 3. Read true screen coordinates
+                  var divRect = deepDiv.getBoundingClientRect();
+                  var lineRect = pLine.getBoundingClientRect();
+                  
+                  // 👉 ADJUST THIS NUMBER! Negative = Closer/Up, Positive = Further/Down
+                  var GAP_PIXELS = 0; 
+                  
+                  var exactShift = divRect.bottom - lineRect.top + GAP_PIXELS;
+                  
+                  // 4. Apply the margin exactly
+                  pLine.style.marginTop = exactShift + 'px';
+                  pLine.style.transition = 'margin-top 0.15s ease-out';
+                  
+                  break;
+                }
+                pLine = pLine.parentElement;
+              }
+            }
+          }, 50);
+        }
+      }
+    } catch(e) {}
   }
 
-  // --- NAV BUTTON FIX ---
+  // --- NAV BUTTON FIX (100% UNTOUCHED FROM YOUR UPLOADED FILE) ---
   var navListenerAdded = false;
   function fixNavButtons() {
     if (navListenerAdded) return;
@@ -551,7 +597,7 @@
     }, true);
   }
 
-  // --- INITIALIZATION ---
+  // --- INITIALIZATION (100% UNTOUCHED FROM YOUR UPLOADED FILE) ---
   var observer = new MutationObserver(function() {
     setup();
     setupPage2();
