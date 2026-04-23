@@ -751,39 +751,52 @@
   var closeBtn = overlay.querySelector('.gifting-iframe-close');
   var iframe = document.getElementById('gifting-iframe');
 
-  // Preload iframe on page load
-  iframe.src = 'gifting.html';
+  // 🚨 THIS IS THE FIX: Point it to the renamed file!
+  if (iframe) iframe.src = 'gifting-flow.html';
 
   function openGifting(e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
-    overlay.classList.add('open');
+    if (overlay) overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
   function closeGifting() {
-    overlay.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
     document.body.style.overflow = '';
   }
 
-  closeBtn.addEventListener('click', closeGifting);
-  overlay.addEventListener('click', function(e) {
+  // --- Handle Stripe Return ---
+  try { 
+    if (window.location.search.indexOf('payment=success') > -1) {
+        sessionStorage.removeItem('giftingAmount');
+        sessionStorage.removeItem('giftingNote');
+        
+        window.history.replaceState(null, '', window.location.pathname);
+        
+        setTimeout(function() {
+            alert("Thank you so much for your generous gift! We can't wait to celebrate with you.");
+        }, 500);
+    }
+  } catch(ex) {}
+
+  if (closeBtn) closeBtn.addEventListener('click', closeGifting);
+  if (overlay) overlay.addEventListener('click', function(e) {
     if (e.target === overlay) closeGifting();
   });
 
-  // Automatically close the overlay if the user navigates to another page
   window.addEventListener('popstate', function() {
-    if (overlay.classList.contains('open')) {
+    if (overlay && overlay.classList.contains('open')) {
       closeGifting();
     }
   });
 
-  // Intercept clicks on "CONTRIBUTE HERE" in gifting sections
   document.addEventListener('click', function(e) {
     var el = e.target;
     var s3 = document.getElementById('PBjG7drPxNT7xdNV');
     var s2 = document.getElementById('PBYJtGx79yrSvklQ');
     var inSection = (s3 && s3.contains(el)) || (s2 && s2.contains(el));
     if (!inSection) return;
+    
     var node = el;
     var section = (s3 && s3.contains(el)) ? s3 : s2;
     while (node && node !== section) {
