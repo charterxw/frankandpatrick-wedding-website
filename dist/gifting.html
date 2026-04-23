@@ -52,7 +52,20 @@
     });
   }
 
-  // --- PAGE 1 SETUP (100% UNTOUCHED FROM YOUR UPLOADED FILE) ---
+  // THE FIX: An aggressive helper to override Canva's -webkit text fill!
+  function applyColorToElement(el, targetColor) {
+    if (!el) return;
+    el.style.setProperty('color', targetColor, 'important');
+    el.style.setProperty('-webkit-text-fill-color', targetColor, 'important');
+    
+    var children = el.querySelectorAll('*');
+    for (var i = 0; i < children.length; i++) {
+      children[i].style.setProperty('color', targetColor, 'important');
+      children[i].style.setProperty('-webkit-text-fill-color', targetColor, 'important');
+    }
+  }
+
+  // --- PAGE 1 SETUP ---
   function setup() {
     function findByText(root, text) {
       var spans = root.querySelectorAll('span');
@@ -121,6 +134,13 @@
     amountSpan.style.webkitUserSelect = 'text';
     amountSpan.style.minWidth = '80px';
     amountSpan.style.display = 'inline-block';
+    
+    // Evaluate text and push colors dynamically
+    function updateAmountColor() {
+      var txt = amountSpan.textContent.trim();
+      var targetColor = (txt === 'Enter Amount' || txt === '$' || txt === '') ? '#9a8678' : '#4b3526';
+      applyColorToElement(amountSpan, targetColor);
+    }
 
     if (!window._amountClickBound) {
       window._amountClickBound = true;
@@ -161,6 +181,7 @@
          if (amountSpan.textContent !== expected) {
             amountSpan.textContent = expected;
             syncButtons(savedAmount);
+            updateAmountColor();
          }
       }
     });
@@ -172,6 +193,7 @@
         amountSpan.textContent = '$';
         placeCursorAtEnd(amountSpan);
       }
+      updateAmountColor();
     });
 
     amountSpan.addEventListener('blur', function() {
@@ -187,6 +209,7 @@
         if (amountSpan.textContent !== formatted) amountSpan.textContent = formatted;
         saveAmount(formatted);
       }
+      updateAmountColor();
     });
 
     amountSpan.addEventListener('input', function(e) {
@@ -205,6 +228,7 @@
       
       saveAmount(amountSpan.textContent);
       syncButtons(num);
+      updateAmountColor();
     });
 
     amountSpan.addEventListener('keydown', function(e) {
@@ -231,6 +255,7 @@
         placeCursorAtEnd(amountSpan);
         saveAmount(amountSpan.textContent);
         syncButtons(combined.toString());
+        updateAmountColor();
       }
     });
 
@@ -272,6 +297,7 @@
         amountSpan.textContent = '$' + value;
         saveAmount(amountSpan.textContent);
         syncButtons(value);
+        updateAmountColor();
       };
 
       btn.addEventListener('click', clickHandler);
@@ -313,11 +339,12 @@
       amountSpan.textContent = '$' + savedAmount;
       syncButtons(savedAmount);
     }
-
+    
+    updateAmountColor(); 
     return true;
   }
 
-  // --- PAGE 2 SETUP (100% UNTOUCHED FROM YOUR UPLOADED FILE) ---
+  // --- PAGE 2 SETUP ---
   function setupPage2() {
     var noteEl = null;
     var allEls = document.querySelectorAll('*');
@@ -352,6 +379,13 @@
     noteSpan.style.minWidth = '150px';
     noteSpan.style.minHeight = '1.2em';
 
+    // Evaluate text and push colors dynamically
+    function updateNoteColor() {
+      var txt = noteSpan.textContent.trim();
+      var targetColor = (txt === 'Start typing here...' || txt === '') ? '#9a8678' : '#4b3526';
+      applyColorToElement(noteSpan, targetColor);
+    }
+
     if (!window._noteClickBound) {
       window._noteClickBound = true;
       document.addEventListener('click', function(e) {
@@ -380,6 +414,7 @@
       if (noteSpan.textContent.trim() === 'Start typing here...') {
         noteSpan.textContent = '';
       }
+      updateNoteColor();
     });
 
     noteSpan.addEventListener('blur', function() {
@@ -387,6 +422,7 @@
       if (noteSpan.textContent.trim() === '') {
         noteSpan.textContent = 'Start typing here...';
       }
+      updateNoteColor();
     });
 
     noteSpan.addEventListener('input', function(e) {
@@ -395,12 +431,14 @@
       if (val !== 'Start typing here...') {
         sessionStorage.setItem('giftingNote', val);
       }
+      updateNoteColor();
     });
 
+    updateNoteColor(); 
     return true;
   }
 
-  // --- PAGE 3 SETUP (DYNAMIC EXACT BOTTOM ALIGNMENT WITH REFLOW) ---
+  // --- PAGE 3 SETUP (100% UNTOUCHED) ---
   function setupPage3() {
     try {
       var spans = document.querySelectorAll('span');
@@ -457,7 +495,6 @@
                       overflow: visible !important;
                       clip-path: none !important;
                   }
-                  /* Unrestricts the exact path you pinpointed */
                   [class*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) td div,
                   [id*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) td div,
                   [data-elements-id*="LB5TrDDt7rgLml6F"] table tr:nth-child(4) td div {
@@ -488,25 +525,17 @@
                 if (!pLine || pLine.tagName === 'BODY') break;
                 if (window.getComputedStyle(pLine).position === 'absolute') {
                   
-                  // 1. Reset margin to get a clean, native measurement
                   pLine.style.marginTop = '0px';
-                  
-                  // 2. FORCE BROWSER REFLOW (Fixes the freeze!)
                   void pLine.offsetHeight; 
                   
-                  // 3. Read true screen coordinates
                   var divRect = deepDiv.getBoundingClientRect();
                   var lineRect = pLine.getBoundingClientRect();
                   
-                  // 👉 ADJUST THIS NUMBER! Negative = Closer/Up, Positive = Further/Down
                   var GAP_PIXELS = 0; 
-                  
                   var exactShift = divRect.bottom - lineRect.top + GAP_PIXELS;
                   
-                  // 4. Apply the margin exactly
                   pLine.style.marginTop = exactShift + 'px';
                   pLine.style.transition = 'margin-top 0.15s ease-out';
-                  
                   break;
                 }
                 pLine = pLine.parentElement;
@@ -518,7 +547,7 @@
     } catch(e) {}
   }
 
-  // --- NAV BUTTON FIX (100% UNTOUCHED FROM YOUR UPLOADED FILE) ---
+  // --- NAV BUTTON FIX ---
   var navListenerAdded = false;
   function fixNavButtons() {
     if (navListenerAdded) return;
@@ -597,18 +626,16 @@
     }, true);
   }
 
-  // --- INITIALIZATION (100% UNTOUCHED FROM YOUR UPLOADED FILE) ---
+  // --- INITIALIZATION ---
   var observer = new MutationObserver(function() {
     setup();
     setupPage2();
-    setupPage3(); // Execute the Page 3 update sync anytime the DOM mutates
+    setupPage3(); 
     fixNavButtons();
   });
   
-  // Start observing the page for changes instantly
   observer.observe(document.body || document.documentElement, { childList: true, subtree: true });
 
-  // Run all functions once immediately in case the DOM is already ready
   setup();
   setupPage2();
   setupPage3();
