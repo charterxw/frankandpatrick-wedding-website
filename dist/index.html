@@ -758,21 +758,23 @@
     if (e) { e.preventDefault(); e.stopPropagation(); }
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
-    try { sessionStorage.setItem('giftingOpen', '1'); } catch(ex) {}
   }
 
   function closeGifting() {
     overlay.classList.remove('open');
     document.body.style.overflow = '';
-    try { sessionStorage.removeItem('giftingOpen'); } catch(ex) {}
   }
-
-  // Re-open overlay if it was open before refresh
-  try { if (sessionStorage.getItem('giftingOpen') === '1') { overlay.classList.add('open'); document.body.style.overflow = 'hidden'; } } catch(ex) {}
 
   closeBtn.addEventListener('click', closeGifting);
   overlay.addEventListener('click', function(e) {
     if (e.target === overlay) closeGifting();
+  });
+
+  // Automatically close the overlay if the user navigates to another page
+  window.addEventListener('popstate', function() {
+    if (overlay.classList.contains('open')) {
+      closeGifting();
+    }
   });
 
   // Intercept clicks on "CONTRIBUTE HERE" in gifting sections
