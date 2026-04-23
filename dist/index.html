@@ -347,6 +347,7 @@
     background: #fffaf0;
     visibility: hidden;
     pointer-events: none;
+    overflow: hidden;
   }
   #gifting-iframe-overlay.open {
     z-index: 100000;
@@ -354,10 +355,11 @@
     pointer-events: auto;
   }
   #gifting-iframe-overlay iframe {
-    width: 100%;
-    height: 100%;
+    width: 1366px;
+    height: 930px;
     border: none;
     transition: opacity 0.15s ease-in;
+    transform-origin: top left;
   }
   .gifting-iframe-close {
     position: fixed;
@@ -757,6 +759,7 @@
     if (overlay) {
       overlay.classList.remove('open');
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     }
     if (iframe) {
       iframe.src = 'about:blank';
@@ -768,6 +771,16 @@
     if (e.persisted) ensureOverlayClosed();
   });
 
+  function scaleIframe() {
+    if (!iframe) return;
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var scale = Math.min(vw / 1366, vh / 930);
+    iframe.style.transform = 'scale(' + scale + ')';
+    iframe.style.marginLeft = ((vw - 1366 * scale) / 2) + 'px';
+    iframe.style.marginTop = ((vh - 930 * scale) / 2) + 'px';
+  }
+
   function openGifting(e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
     if (!iframe) return;
@@ -777,14 +790,21 @@
       iframe.onload = function() { iframe.style.opacity = '1'; };
       iframe.src = '/contribute-flow.html';
     }
+    scaleIframe();
     if (overlay) overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   }
 
   function closeGifting() {
     if (overlay) overlay.classList.remove('open');
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
   }
+
+  window.addEventListener('resize', function() {
+    if (overlay && overlay.classList.contains('open')) scaleIframe();
+  });
 
   // --- Handle Stripe Return ---
   try { 
