@@ -1,0 +1,6 @@
+{
+  "cleanUrls": false,
+  "rewrites": [
+    { "source": "!(*.html|_assets/**|*.json|*.js|*.css|*.png|*.jpg|*.webp|*.svg|*.woff|*.woff2|*.otf|*.ico|*.mp4|*.gif)", "destination": "/index.html" }
+  ]
+}

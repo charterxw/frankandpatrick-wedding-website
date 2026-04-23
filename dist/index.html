@@ -751,11 +751,16 @@
   var closeBtn = overlay.querySelector('.gifting-iframe-close');
   var iframe = document.getElementById('gifting-iframe');
 
-  // 🚨 THIS IS THE FIX: Point it to the renamed file!
-  if (iframe) iframe.src = 'gifting-flow.html';
+  // Always close overlay on fresh page load / refresh
+  if (overlay) {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
 
   function openGifting(e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
+    // Load iframe content on first open
+    if (iframe && !iframe.getAttribute('src')) iframe.src = '/gifting-flow.html';
     if (overlay) overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
