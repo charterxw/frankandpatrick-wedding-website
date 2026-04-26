@@ -73,13 +73,14 @@
     return !!(target && target.closest && target.closest('.rsvp-dropdown'));
   }
 
-  /* hit-test helper: returns true if event coords are inside el's bounding rect */
-  function hitsRect(e, el) {
+  /* hit-test helper: returns true if event coords are inside el's bounding rect (with optional padding) */
+  function hitsRect(e, el, pad) {
     if (!el || !el.isConnected) return false;
     var cx = e.clientX, cy = e.clientY;
     var rect = el.getBoundingClientRect();
     if (rect.width === 0) return false;
-    return cx >= rect.left && cx <= rect.right && cy >= rect.top && cy <= rect.bottom;
+    var p = pad || 0;
+    return cx >= rect.left - p && cx <= rect.right + p && cy >= rect.top - p && cy <= rect.bottom + p;
   }
 
   function placeCursorAtEnd(el) {
@@ -160,11 +161,11 @@
     /* pointerdown: block Canva from eating the tap; click: actually focus */
     function fieldBlock(e) {
       if (eventIsInsideDropdown(e)) return;
-      if (hitsRect(e, field)) { e.preventDefault(); e.stopImmediatePropagation(); }
+      if (hitsRect(e, field, 15)) { e.preventDefault(); e.stopImmediatePropagation(); }
     }
     function fieldFocus(e) {
       if (eventIsInsideDropdown(e)) return;
-      if (hitsRect(e, field)) {
+      if (hitsRect(e, field, 15)) {
         e.preventDefault(); e.stopImmediatePropagation();
         field.focus(); placeCursorAtEnd(field);
       }
@@ -226,11 +227,11 @@
     /* pointerdown: block Canva from eating the tap; click: open menu */
     function dropdownBlock(e) {
       if (eventIsInsideDropdown(e)) return;
-      if (hitsRect(e, field)) { e.preventDefault(); e.stopImmediatePropagation(); }
+      if (hitsRect(e, field, 15)) { e.preventDefault(); e.stopImmediatePropagation(); }
     }
     function dropdownOpen(e) {
       if (eventIsInsideDropdown(e)) return;
-      if (hitsRect(e, field)) { showDropdown(e); }
+      if (hitsRect(e, field, 15)) { showDropdown(e); }
     }
     document.addEventListener('pointerdown', dropdownBlock, true);
     document.addEventListener('click', dropdownOpen, true);
@@ -312,8 +313,12 @@
   /* ── main setup ── */
   function setup() {
     /* text inputs */
-    makeTextField('Enter guest name(s)', 'rsvpGuestName');
-    makeTextField('Share any dietary restrictions', 'rsvpDietary');
+    makeTextField('Enter guest name(s)', 'rsvpGuestName', function() {
+      return findSmallestTextElement(document, 'Enter guest name(s)');
+    });
+    makeTextField('Share any dietary restrictions', 'rsvpDietary', function() {
+      return findSmallestTextElement(document, 'Share any dietary restrictions');
+    });
     makeTextField('Share a song that will get you on the dance floor', 'rsvpSong', function() {
       return findSmallestTextElement(document, 'Share a song that will get you on the dance floor');
     });
