@@ -670,6 +670,8 @@
       iframe.style.opacity = '0';
       iframe.onload = function() { iframe.style.opacity = '1'; };
       iframe.src = '/contribute-flow.html';
+    } else {
+      iframe.style.opacity = '1';
     }
     scaleIframe();
     if (overlay) overlay.classList.add('open');
@@ -730,6 +732,15 @@
       node = node.parentElement;
     }
   }, true);
+
+  /* preload iframe after main page settles */
+  setTimeout(function() {
+    if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src.indexOf('about:blank') > -1)) {
+      iframe.style.opacity = '0';
+      iframe.onload = function() { iframe.style.opacity = '0'; };
+      iframe.src = '/contribute-flow.html';
+    }
+  }, 2000);
 })();</script>
 <div id="rsvp-iframe-overlay">
   <button class="rsvp-iframe-close" aria-label="Close">&times;</button>
@@ -768,6 +779,8 @@
       iframe.style.opacity = '0';
       iframe.onload = function() { iframe.style.opacity = '1'; };
       iframe.src = '/rsvp-details.html';
+    } else {
+      iframe.style.opacity = '1';
     }
     scaleIframe();
     if (overlay) overlay.classList.add('open');
@@ -810,5 +823,14 @@
       node = node.parentElement;
     }
   }, true);
+
+  /* preload iframe after main page settles */
+  setTimeout(function() {
+    if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src.indexOf('about:blank') > -1)) {
+      iframe.style.opacity = '0';
+      iframe.onload = function() { iframe.style.opacity = '0'; };
+      iframe.src = '/rsvp-details.html';
+    }
+  }, 2500);
 })();</script>
 </body></html>
