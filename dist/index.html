@@ -161,180 +161,45 @@
   /* Remove the inset clip-path on the blob image */
   #LBjKptBhg7L5cZm8 [style*="clip-path"] { clip-path: none !important; }
 
-  /* RSVP Overlay — Bliss & Bone Eden inspired */
-  #rsvp-overlay {
-    display: none;
+  /* ── RSVP Iframe Overlay ── */
+  #rsvp-iframe-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: -1;
+    background: #fffaf0;
+    visibility: hidden;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  #rsvp-iframe-overlay.open {
     z-index: 100000;
-    background: #fffaf0;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease-out;
-    overflow-y: auto;
+    visibility: visible;
+    pointer-events: auto;
   }
-  #rsvp-overlay.open {
-    display: flex;
-    opacity: 1;
+  #rsvp-iframe-overlay iframe {
+    width: 1366px;
+    height: 930px;
+    border: none;
+    transition: opacity 0.15s ease-in;
+    transform-origin: top left;
   }
-  #rsvp-overlay .rsvp-card {
-    background: #fffaf0;
-    border-radius: 0;
-    padding: 48px 40px 40px;
-    max-width: 520px;
-    width: 100%;
-    margin: auto;
-    box-shadow: none;
-    position: relative;
-    font-family: 'YAFcfr0ZwUA', Georgia, serif;
-    font-size: 16px;
-    line-height: 25px;
-    letter-spacing: 0;
-    font-weight: 400;
-    color: #4b3526;
-  }
-  #rsvp-overlay .rsvp-close {
-    position: absolute;
-    top: 16px; right: 16px;
+  .rsvp-iframe-close {
+    position: fixed;
+    top: 12px; right: 16px;
+    z-index: 100001;
     background: none;
     border: none;
-    font-size: 22px;
+    font-size: 28px;
     color: #4b3526;
     cursor: pointer;
     line-height: 1;
     padding: 4px 8px;
     opacity: 0.6;
-    transition: opacity 0.2s;
   }
-  #rsvp-overlay .rsvp-close:hover { opacity: 1; }
-
-  #rsvp-overlay h2 {
-    font-family: 'YAFdtQi73Xs', Georgia, serif;
-    font-size: 28px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    text-align: center;
-    margin: 0 0 6px;
-    color: #4b3526;
-  }
-  #rsvp-overlay .rsvp-subtitle {
-    text-align: center;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 32px;
-    color: #4b3526;
-    font-family: 'YAFdtQi73Xs', Georgia, serif;
-  }
-  #rsvp-overlay .rsvp-section-title {
-    font-family: 'YAFdtQi73Xs', Georgia, serif;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #4b3526;
-    margin: 28px 0 16px;
-    padding-bottom: 0;
-  }
-  #rsvp-overlay label {
-    display: block;
-    font-size: 16px;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
-    line-height: 25px;
-    margin-bottom: 0;
-    color: #4b3526;
-    font-family: 'YAFcfr0ZwUA', Georgia, serif;
-  }
-  #rsvp-overlay input[type="text"],
-  #rsvp-overlay textarea {
-    width: 100%;
-    padding: 12px 0;
-    border: none;
-    border-bottom: 1px solid #d4c5b5;
-    border-radius: 0;
-    background: transparent;
-    font-family: 'YAFcfr0ZwUA', Georgia, serif;
-    font-size: 16px;
-    color: #4b3526;
-    margin-bottom: 24px;
-    box-sizing: border-box;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  #rsvp-overlay input[type="text"]::placeholder,
-  #rsvp-overlay textarea::placeholder {
-    color: #4b3526;
-    opacity: 0.5;
-  }
-  #rsvp-overlay input[type="text"]:focus,
-  #rsvp-overlay textarea:focus {
-    border-bottom-color: #4b3526;
-  }
-  #rsvp-overlay textarea {
-    resize: vertical;
-    min-height: 48px;
-  }
-  #rsvp-overlay .rsvp-select-wrapper {
-    position: relative;
-    margin-bottom: 24px;
-  }
-  #rsvp-overlay select {
-    width: 100%;
-    padding: 12px 0;
-    border: none;
-    border-bottom: 1px solid #d4c5b5;
-    border-radius: 0;
-    background: transparent;
-    font-family: 'YAFcfr0ZwUA', Georgia, serif;
-    font-size: 16px;
-    color: #4b3526;
-    outline: none;
-    cursor: pointer;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    transition: border-color 0.2s;
-  }
-  #rsvp-overlay select:focus {
-    border-bottom-color: #4b3526;
-  }
-  #rsvp-overlay .rsvp-select-wrapper::after {
-    content: '\25BE';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9a8577;
-    font-size: 14px;
-    pointer-events: none;
-  }
-  #rsvp-overlay .rsvp-submit {
-    display: block;
-    width: 240px;
-    margin: 36px auto 0;
-    padding: 13px 24px;
-    background: transparent;
-    border: 1px solid #4b3526;
-    border-radius: 0;
-    color: #4b3526;
-    font-family: 'YAFdtQi73Xs', Georgia, serif;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-align: center;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
-  #rsvp-overlay .rsvp-submit:hover {
-    background: #4b3526;
-    color: #fffaf0;
-  }
+  .rsvp-iframe-close:hover { opacity: 1; }
 
   /* ── Gifting Iframe Overlay ── */
   #gifting-iframe-overlay {
@@ -771,14 +636,30 @@
     if (e.persisted) ensureOverlayClosed();
   });
 
-  function scaleIframe() {
-    if (!iframe) return;
+  window.__applyOverlayIframeScale = function(targetIframe) {
+    if (!targetIframe) return;
     var vw = window.innerWidth;
     var vh = window.innerHeight;
+    var isMobilePortrait = vw <= 768 && vh > vw;
+    if (isMobilePortrait) {
+      targetIframe.style.width = vw + 'px';
+      targetIframe.style.height = vh + 'px';
+      targetIframe.style.transform = 'none';
+      targetIframe.style.marginLeft = '0px';
+      targetIframe.style.marginTop = '0px';
+      return;
+    }
+
     var scale = Math.min(vw / 1366, vh / 930);
-    iframe.style.transform = 'scale(' + scale + ')';
-    iframe.style.marginLeft = ((vw - 1366 * scale) / 2) + 'px';
-    iframe.style.marginTop = ((vh - 930 * scale) / 2) + 'px';
+    targetIframe.style.width = '1366px';
+    targetIframe.style.height = '930px';
+    targetIframe.style.transform = 'scale(' + scale + ')';
+    targetIframe.style.marginLeft = ((vw - 1366 * scale) / 2) + 'px';
+    targetIframe.style.marginTop = ((vh - 930 * scale) / 2) + 'px';
+  };
+
+  function scaleIframe() {
+    window.__applyOverlayIframeScale(iframe);
   }
 
   function openGifting(e) {
@@ -850,92 +731,69 @@
     }
   }, true);
 })();</script>
-<div id="rsvp-overlay">
-  <div class="rsvp-card">
-    <button class="rsvp-close" aria-label="Close">&times;</button>
-    <form id="rsvp-form" onsubmit="return false;">
-
-      <input type="text" id="rsvp-name" name="name" placeholder="Enter Guest Name" required>
-
-      <h3 class="rsvp-section-title">The Wedding</h3>
-
-      <div class="rsvp-select-wrapper">
-        <select name="attending" required>
-          <option value="" disabled selected>Will you be joining us?</option>
-          <option value="yes">Joyfully Accept</option>
-          <option value="no">Regretfully Decline</option>
-        </select>
-      </div>
-
-      <div class="rsvp-select-wrapper">
-        <select name="accommodation">
-          <option value="" disabled selected>Accommodation needed?</option>
-          <option value="yes">Yes, please</option>
-          <option value="no">No, thank you</option>
-        </select>
-      </div>
-
-      <div class="rsvp-select-wrapper">
-        <select name="carpool">
-          <option value="" disabled selected>Carpool needed?</option>
-          <option value="yes">Yes, please</option>
-          <option value="no">No, thank you</option>
-        </select>
-      </div>
-
-      <input type="text" name="dietary" placeholder="List any dietary restrictions">
-
-      <h3 class="rsvp-section-title">Requests</h3>
-
-      <input type="text" id="rsvp-song" name="song" placeholder="Enter a song">
-
-      <button type="submit" class="rsvp-submit">Submit Response</button>
-    </form>
-  </div>
+<div id="rsvp-iframe-overlay">
+  <button class="rsvp-iframe-close" aria-label="Close">&times;</button>
+  <iframe id="rsvp-iframe" src="about:blank" title="RSVP"></iframe>
 </div>
 <script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function(){
-  var overlay = document.getElementById('rsvp-overlay');
-  var closeBtn = overlay.querySelector('.rsvp-close');
+  var overlay = document.getElementById('rsvp-iframe-overlay');
+  var closeBtn = overlay.querySelector('.rsvp-iframe-close');
+  var iframe = document.getElementById('rsvp-iframe');
+
+  function ensureOverlayClosed() {
+    if (overlay) {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+    if (iframe) {
+      iframe.src = 'about:blank';
+      iframe.style.opacity = '0';
+    }
+  }
+  ensureOverlayClosed();
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) ensureOverlayClosed();
+  });
+
+  function scaleIframe() {
+    window.__applyOverlayIframeScale(iframe);
+  }
 
   function openRsvp(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var section = document.getElementById('PBwzFRlpFRfJMqSm');
-    if (section) {
-      var bodyFont = '', headingFont = '';
-      var spans = section.querySelectorAll('span, p, div');
-      for (var i = 0; i < spans.length; i++) {
-        var cf = getComputedStyle(spans[i]).fontFamily;
-        var fw = getComputedStyle(spans[i]).fontWeight;
-        if (!cf || cf.indexOf('YAF') === -1) continue;
-        if (!bodyFont) bodyFont = cf;
-        if (parseInt(fw) >= 600 && !headingFont) headingFont = cf;
-        if (bodyFont && headingFont) break;
-      }
-      if (!headingFont) headingFont = bodyFont;
-      var card = overlay.querySelector('.rsvp-card');
-      if (bodyFont) {
-        card.style.fontFamily = bodyFont;
-        var inputs = card.querySelectorAll('input, textarea, select');
-        for (var k = 0; k < inputs.length; k++) inputs[k].style.fontFamily = bodyFont;
-      }
-      var headingEls = overlay.querySelectorAll('h2, h3, .rsvp-subtitle, .rsvp-submit');
-      for (var j = 0; j < headingEls.length; j++) {
-        if (headingFont) headingEls[j].style.fontFamily = headingFont;
-      }
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (!iframe) return;
+    var needsLoad = !iframe.src || iframe.src === 'about:blank' || iframe.src.indexOf('about:blank') > -1;
+    if (needsLoad) {
+      iframe.style.opacity = '0';
+      iframe.onload = function() { iframe.style.opacity = '1'; };
+      iframe.src = '/rsvp-details.html';
     }
-    overlay.style.display = 'flex';
-    requestAnimationFrame(function() { overlay.classList.add('open'); });
+    scaleIframe();
+    if (overlay) overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   }
 
   function closeRsvp() {
-    overlay.classList.remove('open');
-    setTimeout(function() { overlay.style.display = 'none'; }, 300);
+    if (overlay) overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
   }
 
-  closeBtn.addEventListener('click', closeRsvp);
-  overlay.addEventListener('click', function(e) {
+  window.addEventListener('resize', function() {
+    if (overlay && overlay.classList.contains('open')) scaleIframe();
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', closeRsvp);
+  if (overlay) overlay.addEventListener('click', function(e) {
     if (e.target === overlay) closeRsvp();
+  });
+
+  window.addEventListener('popstate', function() {
+    if (overlay && overlay.classList.contains('open')) {
+      closeRsvp();
+    }
   });
 
   document.addEventListener('click', function(e) {
