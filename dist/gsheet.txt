@@ -1,0 +1,47 @@
+Google Sheets setup
+1. Create the spreadsheet
+
+Create a Google Sheet with these column headers in Row 1:
+
+A	B	C	D	E	F	G	H
+Timestamp	Guest Name	Attending	Accommodation	Transportation	Dietary	Brunch	Song
+
+2. Add the Apps Script
+
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+
+  sheet.appendRow([
+    new Date(),
+    data.guestName || '',
+    data.attending || '',
+    data.accommodation || '',
+    data.transportation || '',
+    data.dietary || '',
+    data.brunch || '',
+    data.song || ''
+  ]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ result: 'success' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+Go to Extensions → Apps Script, replace the code with:
+
+3. Deploy the Apps Script
+
+Click Deploy → New deployment
+Type: Web app
+Execute as: Me
+Who has access: Anyone
+Click Deploy and copy the URL (looks like https://script.google.com/macros/s/AKfyc.../exec)
+
+4. Set the environment variable in Cloudflare
+
+Go to Cloudflare Dashboard → Pages → your project → Settings → Environment variables
+Add: GOOGLE_SCRIPT_URL = the Apps Script URL you copied
+Set it for both Production and Preview
+After your next deploy, clicking SUBMIT RSVP will send data through /api/rsvp → Cloudflare Pages Function → Google Apps Script → your spreadsheet.
+
