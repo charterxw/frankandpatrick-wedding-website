@@ -294,6 +294,9 @@
           btnParent.style.pointerEvents = '';
           if (result.success) {
             alert('Thank you, ' + data.guestName + '! Your RSVP has been received.');
+            if (window.parent !== window) {
+              window.parent.postMessage({ type: 'rsvp-submitted' }, '*');
+            }
           } else {
             alert('Something went wrong: ' + (result.error || 'Unknown error'));
           }

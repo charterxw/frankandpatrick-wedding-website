@@ -627,12 +627,13 @@
   /* inject styles for the animated bars */
   var musicCSS = document.createElement('style');
   musicCSS.textContent = [
-    '#music-toggle { display:none; position:fixed; top:10px; right:10px; z-index:999998;',
+    '#music-toggle { display:flex; position:fixed; top:10px; right:10px; z-index:999998;',
     '  background:rgba(75,53,38,0.85); color:#fffaf0; border:none; border-radius:50%;',
     '  width:30px; height:30px; cursor:pointer; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);',
     '  box-shadow:0 2px 12px rgba(0,0,0,0.15); transition:opacity 0.3s;',
-    '  align-items:center; justify-content:center; padding:0; }',
-    '#music-toggle.visible { display:flex !important; }',
+    '  align-items:center; justify-content:center; padding:0;',
+    '  visibility:hidden; opacity:0; pointer-events:none; }',
+    '#music-toggle.visible { visibility:visible; opacity:1; pointer-events:auto; }',
     '#music-toggle:hover { opacity:0.85; }',
     '#music-toggle .music-icon { flex-shrink:0; display:none; }',
     '#music-toggle.paused .music-icon { display:block; }',
@@ -892,6 +893,12 @@
   if (closeBtn) closeBtn.addEventListener('click', closeRsvp);
   if (overlay) overlay.addEventListener('click', function(e) {
     if (e.target === overlay) closeRsvp();
+  });
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'rsvp-submitted') {
+      closeRsvp();
+    }
   });
 
   window.addEventListener('popstate', function() {
