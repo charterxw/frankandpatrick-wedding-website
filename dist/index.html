@@ -800,6 +800,12 @@
     if (e.target === overlay) closeGifting();
   });
 
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'gifting-payment-opened') {
+      closeGifting();
+    }
+  });
+
   window.addEventListener('popstate', function() {
     if (overlay && overlay.classList.contains('open')) {
       closeGifting();

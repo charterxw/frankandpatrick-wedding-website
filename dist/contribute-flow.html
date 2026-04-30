@@ -575,7 +575,16 @@
     .then(function(data) {
       console.log('API response:', data);
       if (data.url) {
-        window.top.location.href = data.url; 
+        window.open(data.url, '_blank');
+        textNode.textContent = originalText;
+        btnEl.dataset.processing = 'false';
+        btnEl.style.pointerEvents = 'auto';
+        sessionStorage.removeItem('giftingAmount');
+        sessionStorage.removeItem('giftingNote');
+        alert("Thank you so much for your generous gift! We can't wait to celebrate with you.\n\nYour payment page has been opened in a new tab.");
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'gifting-payment-opened' }, '*');
+        }
       } else {
         alert('Stripe Error: ' + (data.error || JSON.stringify(data)) + '\n\nNote: If you are testing on localhost, the Cloudflare API is not running here!');
         textNode.textContent = originalText;
