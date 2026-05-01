@@ -561,31 +561,48 @@
 
     console.log("💳 Initiating Stripe Payment... Amount: $" + amt);
 
+    /* Open the new tab NOW (in the click context) so browsers don't block it */
+    var paymentTab = window.open('about:blank', '_blank');
+
     fetch('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount: amt, note: note })
     })
     .then(function(res) {
-      if (!res.ok) console.error('API status:', res.status);
-      return res.json().catch(function() { 
-        return res.text().then(function(t) { throw new Error('Not JSON: ' + t.substring(0, 200)); }); 
-      });
+      if (!res.ok) {
+        return res.text().then(function(t) {
+          try { return JSON.parse(t); } catch(e) {
+            throw new Error('Server returned status ' + res.status + ': ' + t.substring(0, 200));
+          }
+        });
+      }
+      return res.json();
     })
     .then(function(data) {
       console.log('API response:', data);
       if (data.url) {
-        window.open(data.url, '_blank');
+        if (paymentTab) {
+          paymentTab.location.href = data.url;
+        } else {
+          window.open(data.url, '_blank');
+        }
         textNode.textContent = originalText;
         btnEl.dataset.processing = 'false';
         btnEl.style.pointerEvents = 'auto';
         sessionStorage.removeItem('giftingAmount');
         sessionStorage.removeItem('giftingNote');
-        alert("Thank you so much for your generous gift! We can't wait to celebrate with you.\n\nYour payment page has been opened in a new tab.");
-        if (window.parent !== window) {
-          window.parent.postMessage({ type: 'gifting-payment-opened' }, '*');
-        }
+        /* Wait for the Stripe tab to close, then close the overlay */
+        var checkClosed = setInterval(function() {
+          if (paymentTab && paymentTab.closed) {
+            clearInterval(checkClosed);
+            if (window.parent !== window) {
+              window.parent.postMessage({ type: 'gifting-payment-opened' }, '*');
+            }
+          }
+        }, 500);
       } else {
+        if (paymentTab) paymentTab.close();
         alert('Stripe Error: ' + (data.error || JSON.stringify(data)) + '\n\nNote: If you are testing on localhost, the Cloudflare API is not running here!');
         textNode.textContent = originalText;
         btnEl.dataset.processing = 'false';
@@ -594,6 +611,7 @@
     })
     .catch(function(err) {
       console.error('Fetch error:', err);
+      if (paymentTab) paymentTab.close();
       alert('Network Error: ' + err.message + '\n\nMake sure your Cloudflare API is deployed and accessible!');
       textNode.textContent = originalText;
       btnEl.dataset.processing = 'false';

@@ -35,8 +35,8 @@ export async function onRequestPost(context) {
         'line_items[0][price_data][product_data][description]': note || 'A heartfelt gift',
         'line_items[0][price_data][unit_amount]': String(amountNum * 100),
         'line_items[0][quantity]': '1',
-        'success_url': origin + '/gifting?payment=success',
-        'cancel_url': origin + '/gifting?payment=cancelled',
+        'success_url': origin + '/?payment=success',
+        'cancel_url': origin + '/?payment=cancelled',
       }),
     });
 
