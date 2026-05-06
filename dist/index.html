@@ -951,4 +951,54 @@
     }
   }, 2500);
 })();</script>
+<script nonce="97a97fbf-54fb-4c2f-87a4-98910d3f6945">(function(){
+  /* Make "VISIT WEBSITE" button on details page clickable */
+  function findVisitBtn() {
+    var all = document.querySelectorAll('p, span, div');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      var t = (el.textContent || '').trim().toUpperCase();
+      if (t === 'VISIT WEBSITE') {
+        /* Walk up to find the clickable container (the button box) */
+        var btn = el;
+        while (btn.parentElement && (btn.parentElement.textContent || '').trim().toUpperCase() === 'VISIT WEBSITE') {
+          btn = btn.parentElement;
+        }
+        btn.style.cursor = 'pointer';
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.open('https://oceanohalfmoonbay.com', '_blank', 'noopener');
+        });
+        /* Also make any sibling overlay divs pass clicks through or handle them */
+        if (btn.parentElement) {
+          var siblings = btn.parentElement.children;
+          for (var j = 0; j < siblings.length; j++) {
+            if (siblings[j] !== btn) {
+              siblings[j].style.cursor = 'pointer';
+              siblings[j].addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open('https://oceanohalfmoonbay.com', '_blank', 'noopener');
+              });
+            }
+          }
+          btn.parentElement.style.cursor = 'pointer';
+          btn.parentElement.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.open('https://oceanohalfmoonbay.com', '_blank', 'noopener');
+          });
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+  /* Canva renders async, so poll until the button appears */
+  var attempts = 0;
+  var poll = setInterval(function() {
+    if (findVisitBtn() || ++attempts > 50) clearInterval(poll);
+  }, 500);
+})();</script>
 </body></html>
