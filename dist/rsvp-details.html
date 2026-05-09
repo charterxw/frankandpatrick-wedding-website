@@ -329,7 +329,7 @@
     /* dropdowns */
     makeDropdown('Will you be joining us?', ['Joyfully Accept', 'Regretfully Decline'], 'rsvpAttending');
     makeDropdown('Will you need accommodation for the night of October 3?', ['Yes, please', 'No, thank you'], 'rsvpAccommodation');
-    makeDropdown('What is your transportation plan?', ['I will drive myself', 'I need a ride', 'Other'], 'rsvpTransportation');
+    makeDropdown('What is your transportation plan?', ['I will drive my own car', 'I plan to rent a car', 'I need a ride'], 'rsvpTransportation');
     makeDropdown('Would you be interested in joining us for Sunday brunch?', ['Yes, count me in!', 'No, thank you'], 'rsvpBrunch', function() {
       return findSmallestTextElement(document, 'Would you be interested in joining us for Sunday brunch?');
     });
