@@ -1,6 +1,7 @@
 {
   "cleanUrls": false,
   "rewrites": [
+    { "source": "/game-music", "destination": "/game-music.html" },
     { "source": "!(*.html|_assets/**|*.json|*.js|*.css|*.png|*.jpg|*.webp|*.svg|*.woff|*.woff2|*.otf|*.ico|*.mp4|*.gif)", "destination": "/index.html" }
   ]
 }

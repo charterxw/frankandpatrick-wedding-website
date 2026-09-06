@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Music Game Night · Frank &amp; Patrick</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fffaf0">
+<meta property="og:title" content="Music Game Night · Frank &amp; Patrick">
+<meta property="og:type" content="website">
+<link rel="shortcut icon" href="/_assets/images/2d0b56e7e51cf11036ad8734bdb67e2d.png">
+<link rel="icon" href="/_assets/images/e53c4bd8da5e491d9ab09e7cf0daf874.png" sizes="192x192">
+<link rel="apple-touch-icon" href="/_assets/images/725b756a69a7d4c235070e51acd85560.png" sizes="180x180">
+<style>
+/* ── Fonts lifted from the Canva export so this page matches the rest of the site ── */
+@font-face { font-family: "New Icon Script"; src: url("/_assets/fonts/d502f009b606c1ec45d1036a026e21c5.otf") format("opentype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "The Seasons";     src: url("/_assets/fonts/d283d1d356e24da9b2a991ec89a3b544.otf") format("opentype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Gotham";          src: url("/_assets/fonts/161d1b56460d09660b2114be20502ca2.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Gotham";          src: url("/_assets/fonts/7bdffa736c4324fcc99998ccde367025.otf") format("opentype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Barlow";          src: url("/_assets/fonts/f079f63283f90304e7afe4b28fd1950b.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Barlow";          src: url("/_assets/fonts/f9171825d9d4f304b2a982dc5b947d22.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+
+:root {
+  --cream:      #fffaf0;
+  --cream-warm: #f4e8d2;
+  --ink:        #4b3526;
+  --ink-soft:   #655040;
+  --ink-deep:   #473224;
+  --gold:       #ceab90;
+  --hairline:   #ded0bd;
+  --cjk: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --body: "Gotham", var(--cjk);
+  --label: "Barlow", var(--cjk);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 620px; margin: 0 auto; padding: 40px 26px 96px; }
+
+/* ── back link ── */
+.back {
+  display: inline-block;
+  font-family: var(--label);
+  font-size: 12px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-decoration: none;
+  opacity: .8;
+  margin-bottom: 36px;
+}
+.back:hover { opacity: 1; }
+
+/* ── masthead ── */
+.masthead { text-align: center; margin-bottom: 46px; }
+.eyebrow {
+  font-family: var(--label);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 34px;
+}
+h1 {
+  font-family: "New Icon Script", var(--cjk);
+  font-weight: 400;
+  font-size: clamp(46px, 13vw, 76px);
+  line-height: 1.05;
+  color: var(--ink);
+  margin: 0;
+}
+.title-cn {
+  font-family: var(--cjk);
+  font-size: 17px;
+  letter-spacing: .3em;
+  color: var(--ink-soft);
+  margin: 14px 0 0;
+  padding-left: .3em;
+}
+
+/* ── ornament rule ── */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 30px auto 0;
+  max-width: 260px;
+  color: var(--gold);
+}
+.ornament::before, .ornament::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--gold);
+  opacity: .75;
+}
+.ornament span { font-size: 13px; letter-spacing: .2em; }
+
+/* ── prose ── */
+.lede { text-align: center; }
+.lede p { margin: 0 0 9px; }
+.lede .en { font-size: 14.5px; line-height: 1.65; }
+.lede .cn { font-size: 13.5px; }
+.en { color: var(--ink); }
+.cn { font-family: var(--cjk); color: var(--ink-soft); font-size: 15px; line-height: 1.85; }
+
+/* ── programme of rounds ── */
+.programme { margin: 48px 0 0; }
+.programme-label {
+  text-align: center;
+  font-family: var(--label);
+  font-weight: 600;
+  font-size: 9.5px;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+}
+.programme-label span {
+  font-family: var(--cjk);
+  letter-spacing: .18em;
+  text-transform: none;
+  font-size: 11px;
+}
+.rounds {
+  border-top: 1px solid var(--gold);
+  border-bottom: 1px solid var(--gold);
+}
+.round {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 20px 6px;
+}
+.round + .round { border-top: 1px solid var(--hairline); }
+.numeral {
+  flex: 0 0 26px;
+  font-family: "The Seasons", var(--cjk);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .18em;
+  color: var(--gold);
+  line-height: 1.4;
+}
+.round h2 {
+  font-family: "The Seasons", var(--cjk);
+  font-weight: 700;
+  font-size: clamp(16px, 4.3vw, 18px);
+  letter-spacing: .03em;
+  line-height: 1.35;
+  margin: 0 0 5px;
+  color: var(--ink-deep);
+}
+.round h3 {
+  font-family: var(--cjk);
+  font-weight: 400;
+  font-size: 12.5px;
+  letter-spacing: .18em;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.teams {
+  text-align: center;
+  font-family: var(--label);
+  font-size: 12.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 26px 0 0;
+}
+.teams span { display: block; font-family: var(--cjk); letter-spacing: .12em; text-transform: none; font-size: 13px; margin-top: 4px; }
+
+/* ── form ── */
+form { margin-top: 52px; }
+.section-head { text-align: center; margin-bottom: 30px; }
+.section-head h2 {
+  font-family: "New Icon Script", var(--cjk);
+  font-weight: 400;
+  font-size: clamp(34px, 9vw, 46px);
+  line-height: 1.1;
+  margin: 0 0 10px;
+}
+.section-head p { margin: 0 0 7px; }
+.section-head p:last-child { margin-bottom: 0; }
+.section-head .en { font-size: 15px; }
+.section-head .cn { font-size: 14px; }
+
+.field { margin-bottom: 26px; }
+label.lbl {
+  display: block;
+  font-family: var(--label);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 9px;
+}
+label.lbl em {
+  font-family: var(--cjk);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: .1em;
+  text-transform: none;
+  font-size: 12.5px;
+  opacity: .85;
+}
+label.lbl .opt { opacity: .6; font-weight: 400; }
+
+input[type="text"] {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  background: transparent;
+  font-family: var(--body);
+  font-size: 16px;
+  color: var(--ink);
+  padding: 8px 2px 10px;
+  border-radius: 0;
+  transition: border-color .18s ease;
+}
+input[type="text"]::placeholder { color: #b3a291; }
+input[type="text"]:focus { outline: none; border-bottom-color: var(--gold); }
+input[type="text"].err { border-bottom-color: #b3573f; }
+
+.singers { display: grid; gap: 14px; }
+
+/* ── plus-one toggle ── */
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  margin: 34px 0 0;
+  padding: 16px 18px;
+  background: var(--cream-warm);
+  user-select: none;
+}
+.toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.box {
+  flex: 0 0 auto;
+  width: 17px; height: 17px;
+  margin-top: 3px;
+  border: 1px solid var(--ink-soft);
+  background: var(--cream);
+  position: relative;
+}
+.toggle input:checked + .box::after {
+  content: "";
+  position: absolute;
+  left: 4px; top: 0px;
+  width: 6px; height: 11px;
+  border: solid var(--ink);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(42deg);
+}
+.toggle input:focus-visible + .box { outline: 2px solid var(--gold); outline-offset: 2px; }
+.toggle .txt { font-size: 14.5px; line-height: 1.55; }
+.toggle .txt b { font-family: var(--label); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; font-size: 12px; display: block; }
+.toggle .txt span { font-family: var(--cjk); font-size: 13px; color: var(--ink-soft); }
+
+#plusOneBlock { display: none; margin-top: 30px; padding-top: 4px; }
+#plusOneBlock.open { display: block; }
+
+/* ── submit ── */
+.actions { margin-top: 46px; text-align: center; }
+button.submit {
+  font-family: var(--label);
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  padding: 16px 40px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background .2s ease, color .2s ease, opacity .2s ease;
+}
+button.submit:hover { background: var(--ink); color: var(--cream); }
+button.submit[disabled] { opacity: .45; cursor: default; }
+button.submit[disabled]:hover { background: transparent; color: var(--ink); }
+
+.note {
+  margin-top: 18px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  font-family: var(--cjk);
+  opacity: .85;
+}
+.msg {
+  margin-top: 20px;
+  font-size: 14px;
+  min-height: 20px;
+  color: #a8503a;
+}
+
+/* ── thank-you state ── */
+#thanks { display: none; text-align: center; padding: 30px 0 10px; }
+#thanks.open { display: block; }
+#thanks h2 {
+  font-family: "New Icon Script", var(--cjk);
+  font-weight: 400;
+  font-size: clamp(40px, 11vw, 58px);
+  margin: 0 0 14px;
+}
+#thanks .again {
+  display: inline-block;
+  margin-top: 22px;
+  font-family: var(--label);
+  font-size: 11.5px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 3px;
+  cursor: pointer;
+}
+
+@media (max-width: 420px) {
+  .page { padding: 30px 20px 80px; }
+  .round { padding: 20px 2px; gap: 16px; }
+  .numeral { flex-basis: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back" href="/" id="backLink">&lt; go back</a>
+
+  <header class="masthead">
+    <p class="eyebrow">Frank &amp; Patrick &nbsp;·&nbsp; 03 October 2026</p>
+    <h1>Music Game Night</h1>
+    <p class="title-cn">婚礼歌友会</p>
+    <div class="ornament"><span>♪</span></div>
+  </header>
+
+  <section class="lede">
+    <p class="en">On our wedding day, we’ll be playing a music game after dinner. Help us build the playlist by sharing a few singers you know and love!</p>
+    <p class="cn">婚礼当天晚宴后，我们准备了一个音乐游戏。告诉我们几位你熟悉又喜欢的歌手，帮我们一起准备游戏歌单吧！</p>
+  </section>
+
+  <section class="programme">
+    <p class="programme-label">The Game <span>游戏环节</span></p>
+    <div class="rounds">
+      <article class="round">
+        <p class="numeral">I</p>
+        <div>
+          <h2>Guess the Song from the Intro</h2>
+          <h3>听前奏猜歌名</h3>
+        </div>
+      </article>
+      <article class="round">
+        <p class="numeral">II</p>
+        <div>
+          <h2>Finish the Lyrics</h2>
+          <h3>歌词接龙挑战</h3>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <p class="teams">
+    Five teams &nbsp;·&nbsp; most correct answers wins a small surprise prize
+    <span>共分五组，答对最多的队伍会获得一份小小的惊喜礼物</span>
+  </p>
+
+  <form id="gameForm" novalidate>
+    <div class="section-head">
+      <h2>Name Your Singers</h2>
+      <p class="en">Tell us 1–3 singers you know well, in Chinese or in English — we’ll build the playlist from everyone’s replies.</p>
+      <p class="cn">请填写 1–3 位你熟悉的歌手，中文或英文都可以，我们会照着大家的回复准备歌单。</p>
+    </div>
+
+    <div class="field">
+      <label class="lbl" for="guestName">Your name <em>你的名字</em></label>
+      <input type="text" id="guestName" name="guestName" placeholder="Enter your name" autocomplete="name">
+    </div>
+
+    <div class="field">
+      <label class="lbl">Singers you know well <em>你熟悉的歌手</em></label>
+      <div class="singers">
+        <input type="text" id="singer1" placeholder="1. Singer you know well 歌手" autocomplete="off">
+        <input type="text" id="singer2" placeholder="2. Optional 可选" autocomplete="off">
+        <input type="text" id="singer3" placeholder="3. Optional 可选" autocomplete="off">
+      </div>
+    </div>
+
+    <label class="toggle" for="hasPlusOne">
+      <input type="checkbox" id="hasPlusOne">
+      <span class="box"></span>
+      <span class="txt">
+        <b>I’m answering for my plus one too</b>
+        <span>我也想帮我的同行家属／朋友一起填写</span>
+      </span>
+    </label>
+
+    <div id="plusOneBlock">
+      <div class="field">
+        <label class="lbl" for="plusOneName">Plus one’s name <em>同行者的名字</em></label>
+        <input type="text" id="plusOneName" placeholder="Enter their name" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="lbl">Singers they know well <em>他／她熟悉的歌手</em></label>
+        <div class="singers">
+          <input type="text" id="plusOneSinger1" placeholder="1. Singer they know well 歌手" autocomplete="off">
+          <input type="text" id="plusOneSinger2" placeholder="2. Optional 可选" autocomplete="off">
+          <input type="text" id="plusOneSinger3" placeholder="3. Optional 可选" autocomplete="off">
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="submit" id="submitBtn">Submit</button>
+      <p class="note">至少填写一位歌手即可提交 · One singer is enough</p>
+      <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <section id="thanks">
+    <div class="ornament"><span>♪</span></div>
+    <h2>Thank you!</h2>
+    <p class="en" id="thanksName">Your singers are on the list — see you in front of the TV.</p>
+    <p class="cn">谢谢你！我们已经收到你的答案，电视机前见，等你上场当歌王。</p>
+    <span class="again" id="againBtn">Submit another response</span>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var form        = document.getElementById('gameForm');
+  var thanks      = document.getElementById('thanks');
+  var thanksName  = document.getElementById('thanksName');
+  var plusToggle  = document.getElementById('hasPlusOne');
+  var plusBlock   = document.getElementById('plusOneBlock');
+  var btn         = document.getElementById('submitBtn');
+  var msg         = document.getElementById('msg');
+
+  function val(id) { return (document.getElementById(id).value || '').trim(); }
+  function clearErrors() {
+    var e = form.querySelectorAll('.err');
+    for (var i = 0; i < e.length; i++) e[i].classList.remove('err');
+    msg.textContent = '';
+  }
+  function fail(id, text) {
+    var el = document.getElementById(id);
+    el.classList.add('err');
+    el.focus();
+    msg.textContent = text;
+    return false;
+  }
+
+  plusToggle.addEventListener('change', function () {
+    plusBlock.classList.toggle('open', plusToggle.checked);
+    if (plusToggle.checked) {
+      document.getElementById('plusOneName').focus({ preventScroll: true });
+      plusBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+
+  /* clear the error styling as soon as the guest starts fixing it */
+  form.addEventListener('input', function (e) {
+    if (e.target.classList.contains('err')) { e.target.classList.remove('err'); msg.textContent = ''; }
+  });
+
+  /* inside the site's iframe overlay the back link should close the overlay instead */
+  document.getElementById('backLink').addEventListener('click', function (e) {
+    if (window.parent !== window) {
+      e.preventDefault();
+      window.parent.postMessage({ type: 'close-overlay' }, '*');
+    }
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearErrors();
+
+    var guestName = val('guestName');
+    if (!guestName) return fail('guestName', 'Please enter your name. 请填写你的名字。');
+
+    var singers = [val('singer1'), val('singer2'), val('singer3')].filter(Boolean);
+    if (!singers.length) return fail('singer1', 'Please name at least one singer. 请至少填写一位歌手。');
+
+    var hasPlusOne = plusToggle.checked;
+    var plusOneName = hasPlusOne ? val('plusOneName') : '';
+    var plusOneSingers = hasPlusOne
+      ? [val('plusOneSinger1'), val('plusOneSinger2'), val('plusOneSinger3')].filter(Boolean)
+      : [];
+
+    if (hasPlusOne) {
+      if (!plusOneName) return fail('plusOneName', 'Please enter your plus one’s name. 请填写同行者的名字。');
+      if (!plusOneSingers.length) return fail('plusOneSinger1', 'Please name at least one singer for your plus one. 请至少为同行者填写一位歌手。');
+    }
+
+    var data = {
+      formType: 'game-music',
+      guestName: guestName,
+      singer1: singers[0] || '',
+      singer2: singers[1] || '',
+      singer3: singers[2] || '',
+      singers: singers.join(', '),
+      hasPlusOne: hasPlusOne ? 'Yes' : 'No',
+      plusOneName: plusOneName,
+      plusOneSinger1: plusOneSingers[0] || '',
+      plusOneSinger2: plusOneSingers[1] || '',
+      plusOneSinger3: plusOneSingers[2] || '',
+      plusOneSingers: plusOneSingers.join(', '),
+      submittedAt: new Date().toISOString()
+    };
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    fetch('/api/game-music', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(function (res) { return res.json(); })
+    .then(function (result) {
+      btn.disabled = false;
+      btn.textContent = 'Submit';
+      if (result && result.success) {
+        thanksName.textContent = 'Thank you, ' + guestName + ' — your singers are on the list. See you in front of the TV.';
+        form.style.display = 'none';
+        thanks.classList.add('open');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.parent !== window) window.parent.postMessage({ type: 'game-music-submitted' }, '*');
+      } else {
+        msg.textContent = 'Something went wrong: ' + ((result && result.error) || 'unknown error') + '. Please try again.';
+      }
+    })
+    .catch(function (err) {
+      btn.disabled = false;
+      btn.textContent = 'Submit';
+      msg.textContent = 'Network error – please try again. 网络出错，请再试一次。';
+      console.error('game-music submit error:', err);
+    });
+  });
+
+  document.getElementById('againBtn').addEventListener('click', function () {
+    form.reset();
+    plusBlock.classList.remove('open');
+    thanks.classList.remove('open');
+    form.style.display = '';
+    clearErrors();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>
