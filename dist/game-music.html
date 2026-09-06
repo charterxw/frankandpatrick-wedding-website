@@ -433,8 +433,8 @@ button.submit[disabled]:hover { background: transparent; color: var(--ink); }
   <section id="thanks">
     <div class="ornament"><span>♪</span></div>
     <h2>Thank you!</h2>
-    <p class="en" id="thanksName">Your singers are on the list — see you in front of the TV.</p>
-    <p class="cn">谢谢你！我们已经收到你的答案，电视机前见，等你上场当歌王。</p>
+    <p class="en" id="thanksName">Your singers are on the list!</p>
+    <p class="cn">谢谢你！我们已经收到你的回复，等你上场当歌王！</p>
     <span class="again" id="againBtn">Submit another response</span>
   </section>
 
@@ -535,7 +535,7 @@ button.submit[disabled]:hover { background: transparent; color: var(--ink); }
       btn.disabled = false;
       btn.textContent = 'Submit';
       if (result && result.success) {
-        thanksName.textContent = 'Thank you, ' + guestName + ' — your singers are on the list. See you in front of the TV.';
+        thanksName.textContent = 'Thank you, ' + guestName + '. Your singers are on the list!';
         form.style.display = 'none';
         thanks.classList.add('open');
         window.scrollTo({ top: 0, behavior: 'smooth' });
